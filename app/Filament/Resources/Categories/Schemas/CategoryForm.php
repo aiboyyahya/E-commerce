@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Categories\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -20,10 +21,9 @@ class CategoryForm
                     ->disabled()
                     ->hint('Slug dibuat otomatis dari nama kategori'),
 
-                TextInput::make('icon')
+                FileUpload::make('icon')
                     ->label('Icon')
-                    ->placeholder('ex: heroicon-o-star')
-                    ->maxLength(255),
+                    
             ]);
     }
 }

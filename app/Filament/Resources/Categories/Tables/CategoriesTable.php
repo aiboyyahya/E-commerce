@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Categories\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -17,7 +18,7 @@ class CategoriesTable
                 TextColumn::make('id')->sortable(),
                 TextColumn::make('category_name')->searchable()->sortable(),
                 TextColumn::make('slug'),
-                TextColumn::make('icon'),
+                ImageColumn::make('icon'),
                 TextColumn::make('created_at')->dateTime('d M Y'),
             ])
             ->filters([
