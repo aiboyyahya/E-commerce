@@ -15,6 +15,7 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class ProductResource extends Resource
 {
@@ -22,6 +23,12 @@ class ProductResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon ='heroicon-s-cube';
 
+    protected static string|UnitEnum|null $navigationGroup = 'Produk';
+
+    protected static ?string $navigationLabel = 'Produk';
+
+    protected static ?string $pluralModelLabel = 'Produk';
+    
     protected static ?string $recordTitleAttribute = 'id';
 
     public static function form(Schema $schema): Schema

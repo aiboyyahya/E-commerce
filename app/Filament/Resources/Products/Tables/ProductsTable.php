@@ -17,31 +17,29 @@ class ProductsTable
         return $table
             ->columns([
                 TextColumn::make('product_name')
-                    ->searchable(),
-                TextColumn::make('slug')
+                ->label('Nama Produk')
                     ->searchable(),
                 TextColumn::make('category.category_name')
-                    ->label('Category')
+                    ->label('kategori')
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('purchase_price')
+                ->label('Harga Beli')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('selling_price')
+                ->label('Harga Jual')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('stock')
+                ->label('Stok')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('status'),
-                ImageColumn::make('all_images')
-                    ->label('Images')
-                    ->getStateUsing(fn($record) => [
-                        $record->image,       
-                        $record->image_file,  
-                    ])
-                    ->circular(),
-
+                ImageColumn::make('image')
+                ->label('Gambar')
+                    ->square()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -13,7 +13,7 @@ class CategoryForm
         return $schema
             ->components([
                TextInput::make('category_name')
-                    ->label('Category Name')
+                    ->label('Nama Kategori')
                     ->required()
                     ->maxLength(255),
 
@@ -22,7 +22,7 @@ class CategoryForm
                     ->hint('Slug dibuat otomatis dari nama kategori'),
 
                 FileUpload::make('icon')
-                    ->label('Icon')
+                    ->label('Ikon')
                     
             ]);
     }

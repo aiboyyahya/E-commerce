@@ -16,9 +16,9 @@ class CategoriesTable
         return $table
             ->columns([
                 TextColumn::make('id')->sortable(),
-                TextColumn::make('category_name')->searchable()->sortable(),
+                TextColumn::make('category_name')->searchable()->sortable()->label('Nama Kategori'),
                 TextColumn::make('slug'),
-                ImageColumn::make('icon'),
+                ImageColumn::make('icon')->label('Ikon')->square(),
                 TextColumn::make('created_at')->dateTime('d M Y'),
             ])
             ->filters([

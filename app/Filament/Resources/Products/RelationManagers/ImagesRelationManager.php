@@ -25,7 +25,7 @@ class ImagesRelationManager extends RelationManager
         return $schema
             ->components([
                 ComponentsFileUpload::make('image_file')
-                    ->label('Upload Gambar Produk')
+                    ->label('Gambar Produk')
                     ->directory('products')
                     ->image()
                     ->maxSize(2048)

@@ -15,25 +15,30 @@ class ProductForm
         return $schema
             ->components([
                 TextInput::make('product_name')
+                ->label('Nama Produk')
                     ->required(),
                 TextInput::make('slug')
                     ->required(),
                 Select::make('category_id')
-                    ->label('Category')
+                    ->label('kategori')
                     ->relationship('category', 'category_name')
                     ->searchable()
                     ->preload()
                     ->required(),
                 Textarea::make('description')
+                ->label('Deskripsi Produk')
                     ->required()
                     ->columnSpanFull(),
                 TextInput::make('purchase_price')
+                ->label('Harga Beli')
                     ->required()
                     ->numeric(),
                 TextInput::make('selling_price')
+                ->label('Harga Jual')
                     ->required()
                     ->numeric(),
                 TextInput::make('stock')
+                ->label('Stok')
                     ->required()
                     ->numeric(),
                 Select::make('status')
@@ -41,6 +46,7 @@ class ProductForm
                     ->default('active')
                     ->required(),
                 FileUpload::make('image')
+                ->label('Gambar Utama Produk')
                     ->image()
                     ->required(),
             ]);
