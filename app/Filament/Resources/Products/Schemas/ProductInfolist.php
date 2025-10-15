@@ -14,6 +14,8 @@ class ProductInfolist
             ->components([
                 TextEntry::make('product_name'),
                 TextEntry::make('slug'),
+                TextEntry::make('category.category_name')
+                    ->label('Category'),
                 TextEntry::make('purchase_price')
                     ->numeric(),
                 TextEntry::make('selling_price')

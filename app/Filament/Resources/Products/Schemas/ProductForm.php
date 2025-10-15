@@ -18,6 +18,12 @@ class ProductForm
                     ->required(),
                 TextInput::make('slug')
                     ->required(),
+                Select::make('category_id')
+                    ->label('Category')
+                    ->relationship('category', 'category_name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),

@@ -20,6 +20,10 @@ class ProductsTable
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
+                TextColumn::make('category.category_name')
+                    ->label('Category')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('purchase_price')
                     ->numeric()
                     ->sortable(),
@@ -30,7 +34,14 @@ class ProductsTable
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('status'),
-                ImageColumn::make('image'),
+                ImageColumn::make('all_images')
+                    ->label('Images')
+                    ->getStateUsing(fn($record) => [
+                        $record->image,       
+                        $record->image_file,  
+                    ])
+                    ->circular(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
