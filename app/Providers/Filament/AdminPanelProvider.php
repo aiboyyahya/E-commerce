@@ -12,6 +12,7 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -27,7 +28,10 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(fn() => redirect()->route('google.redirect'))
+            ->homeUrl(fn() => route('user.homepage'))
+            
+
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -54,6 +58,24 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+                \App\Http\Middleware\IsAdmin::class,
+            ])
+
+
+            ->homeUrl(function (): string {
+                $user = Auth::user();
+
+                if (! $user) {
+                    return route('login');
+                }
+
+
+                if ($user->role === 'admin') {
+                    return Dashboard::getUrl(panel: 'admin');
+                }
+
+
+                return route('user.homepage');
+            });
     }
 }

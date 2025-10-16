@@ -28,6 +28,7 @@ class ImagesRelationManager extends RelationManager
                     ->label('Gambar Produk')
                     ->directory('products')
                     ->image()
+                    ->disk('public')
                     ->maxSize(2048)
                     ->required()
                     ->columnSpanFull(),

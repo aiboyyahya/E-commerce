@@ -1,0 +1,6 @@
+-   [x] Add addToCart method in HomeController.php: Handle POST, add to session cart, redirect to cart
+-   [x] Add viewCart method in HomeController.php: Display cart from session
+-   [x] Add routes in web.php: POST /add-to-cart, GET /cart
+-   [x] Update form action in Detail.blade.php to route('addToCart')
+-   [x] Create Cart.blade.php view for displaying cart
+-   [x] Test the functionality - Server running on http://127.0.0.1:8000

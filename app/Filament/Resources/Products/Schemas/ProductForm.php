@@ -48,6 +48,7 @@ class ProductForm
                 FileUpload::make('image')
                 ->label('Gambar Utama Produk')
                     ->image()
+                    ->disk('public')
                     ->required(),
             ]);
     }
