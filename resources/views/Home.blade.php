@@ -10,7 +10,7 @@
                 <h1 class="text-4xl lg:text-5xl font-extrabold mb-4 leading-tight">Selamat Datang </h1>
                 <p class="text-lg lg:text-xl mb-6 text-gray-700">Temukan produk favoritmu dengan harga spesial !!</p>
 
-                <a href="{{ url('/shop') }}"
+                <a href="{{ route('products') }}"
                     class="inline-block border border-black text-black px-8 py-3 rounded-lg font-semibold hover:bg-black hover:text-white transition">
                     BELANJA SEKARANG
                 </a>

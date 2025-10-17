@@ -2,23 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
+use App\Models\Transaction;
+use App\Models\TransactionItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
     public function index()
     {
-
         $products = Product::latest()->take(8)->get();
-
         return view('home', compact('products'));
     }
 
-    public function showProduct($id)
+    public function products(Request $request)
+    {
+        $query = Product::query();
+
+        if ($request->filled('search')) {
+            $query->where('product_name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        $products = $query->paginate(12);
+        $categories = Category::all();
+
+        return view('products', compact('products', 'categories'));
+    }
+
+    public function Product($id)
     {
         $product = Product::findOrFail($id);
-        return view('product.detail', compact('product'));
+        return view('detail', compact('product'));
     }
 
     public function addToCart(Request $request)
@@ -29,7 +49,6 @@ class HomeController extends Controller
         ]);
 
         $product = Product::findOrFail($request->product_id);
-
         $cart = session()->get('cart', []);
 
         if (isset($cart[$request->product_id])) {
@@ -44,7 +63,6 @@ class HomeController extends Controller
         }
 
         session()->put('cart', $cart);
-
         return redirect()->route('cart')->with('success', 'Produk berhasil ditambahkan ke keranjang!');
     }
 
@@ -57,12 +75,110 @@ class HomeController extends Controller
     public function removeCart($id)
     {
         $cart = session()->get('cart', []);
-
         if (isset($cart[$id])) {
             unset($cart[$id]);
             session()->put('cart', $cart);
         }
-
         return redirect()->route('cart')->with('success', 'Barang berhasil dihapus dari keranjang!');
+    }
+
+    public function updateCart(Request $request, $id)
+    {
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $cart = session()->get('cart', []);
+        if (isset($cart[$id])) {
+            $cart[$id]['quantity'] = $request->quantity;
+            session()->put('cart', $cart);
+        }
+
+        return redirect()->route('cart')->with('success', 'Jumlah produk berhasil diperbarui!');
+    }
+
+    public function checkoutPage(Request $request)
+    {
+        $cart = session()->get('cart', []);
+
+        if ($request->has('product_id') && $request->has('quantity')) {
+            $product = Product::findOrFail($request->product_id);
+            $cart = [
+                $request->product_id => [
+                    'name' => $product->product_name,
+                    'price' => $product->purchase_price,
+                    'quantity' => (int) $request->quantity,
+                    'image' => $product->image,
+                ]
+            ];
+            session()->put('cart', $cart);
+        }
+
+        if (empty($cart)) {
+            return redirect()->route('cart')->with('error', 'Keranjang kosong!');
+        }
+
+        return view('checkout', compact('cart'));
+    }
+
+    public function checkout(Request $request)
+    {
+        $request->validate([
+            'address' => 'required|string',
+            'notes' => 'nullable|string',
+        ]);
+
+        $cart = session()->get('cart', []);
+        if (empty($cart)) {
+            return redirect()->route('cart')->with('error', 'Keranjang kosong!');
+        }
+
+        $total = 0;
+        foreach ($cart as $id => $item) {
+            $product = Product::find($id);
+            if (!$product) {
+                return redirect()->route('cart')->with('error', "Produk {$item['name']} tidak ditemukan.");
+            }
+
+            if ($product->stock < $item['quantity']) {
+                return redirect()->route('cart')->with('error', "Stok produk {$item['name']} tidak mencukupi.");
+            }
+
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        $orderCode = 'ORD-' . time() . '-' . Auth::id();
+
+        $transaction = Transaction::create([
+            'order_code' => $orderCode,
+            'customer_id' => Auth::id(),
+            'address' => $request->address,
+            'status' => 'pending',
+            'total' => $total,
+            'notes' => $request->notes,
+        ]);
+
+        foreach ($cart as $id => $item) {
+            $product = Product::find($id);
+            $product->decrement('stock', $item['quantity']);
+
+            TransactionItem::create([
+                'transaction_id' => $transaction->id,
+                'product_id' => $id,
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+            ]);
+        }
+
+        session()->forget('cart');
+
+        return redirect()->route('checkout.success', $transaction->id)
+            ->with('success', 'Checkout berhasil! Pesanan Anda sedang diproses.');
+    }
+
+    public function checkoutSuccess($id)
+    {
+        $transaction = Transaction::with('items.product')->findOrFail($id);
+        return view('checkout.success', compact('transaction'));
     }
 }
