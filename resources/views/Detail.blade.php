@@ -62,16 +62,22 @@
                             </div>
 
                             <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                                <input type="hidden" name="action" value="cart">
                                 <button type="submit"
                                     class="flex-1 bg-gray-800 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-900 transition">
                                     Tambah ke Keranjang
                                 </button>
-                                <a id="checkout-link"
-                                    href="{{ route('checkout.page', ['product_id' => $product->id, 'quantity' => 1]) }}"
-                                    class="flex-1 bg-orange-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-orange-700 transition text-center">
-                                    Checkout Sekarang
-                                </a>
                             </div>
+                        </form>
+
+                        <form action="{{ route('checkout.page') }}" method="GET" class="flex flex-col gap-4">
+                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="quantity" id="checkout-quantity" value="1">
+                            <input type="hidden" name="direct" value="1">
+                            <button type="submit"
+                                class="w-full bg-orange-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-orange-700 transition">
+                                Checkout Sekarang
+                            </button>
                         </form>
                     </div>
                 </div>
@@ -84,7 +90,7 @@
             const increment = document.getElementById('increment-btn');
             const decrement = document.getElementById('decrement-btn');
             const quantityInput = document.getElementById('product-quantity');
-            const checkoutLink = document.getElementById('checkout-link');
+            const checkoutQuantity = document.getElementById('checkout-quantity');
             const maxStock = parseInt(quantityInput.max);
 
             function updateQuantity(incrementing) {
@@ -94,14 +100,11 @@
                 } else if (!incrementing && val > 1) {
                     quantityInput.value = val - 1;
                 }
-                updateCheckoutLink();
+                updateCheckoutQuantity();
             }
 
-            function updateCheckoutLink() {
-                const currentQuantity = quantityInput.value;
-                const baseUrl =
-                    `{{ route('checkout.page', ['product_id' => $product->id, 'quantity' => '__QUANTITY__']) }}`;
-                checkoutLink.href = baseUrl.replace('__QUANTITY__', currentQuantity);
+            function updateCheckoutQuantity() {
+                checkoutQuantity.value = quantityInput.value;
             }
 
             increment.addEventListener('click', () => updateQuantity(true));

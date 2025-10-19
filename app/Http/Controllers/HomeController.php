@@ -48,6 +48,10 @@ class HomeController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
+        if ($request->action === 'checkout') {
+            return redirect()->route('checkout.page', ['product_id' => $request->product_id, 'quantity' => $request->quantity]);
+        }
+
         $product = Product::findOrFail($request->product_id);
         $cart = session()->get('cart', []);
 
@@ -63,6 +67,7 @@ class HomeController extends Controller
         }
 
         session()->put('cart', $cart);
+
         return redirect()->route('cart')->with('success', 'Produk berhasil ditambahkan ke keranjang!');
     }
 
@@ -101,7 +106,7 @@ class HomeController extends Controller
     {
         $cart = session()->get('cart', []);
 
-        if ($request->has('product_id') && $request->has('quantity')) {
+        if ($request->has('product_id') && $request->has('quantity') && $request->has('direct')) {
             $product = Product::findOrFail($request->product_id);
             $cart = [
                 $request->product_id => [
@@ -111,7 +116,6 @@ class HomeController extends Controller
                     'image' => $product->image,
                 ]
             ];
-            session()->put('cart', $cart);
         }
 
         if (empty($cart)) {
