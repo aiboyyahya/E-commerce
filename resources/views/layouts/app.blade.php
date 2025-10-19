@@ -20,8 +20,7 @@
         <div class="flex space-x-6 text-sm font-medium">
             <a href="{{ url('/') }}" class="hover:text-gray-900 transition">Home</a>
             <a href="{{ url('/produk') }}" class="hover:text-gray-900 transition">Produk</a>
-            <a href="#" class="hover:text-gray-900 transition">About</a>
-            <a href="#" class="hover:text-gray-900 transition">Contact</a>
+            <a href="{{ route('kontak') }}" class="hover:text-gray-900 transition">Kontak</a>
         </div>
 
         <div class="flex items-center space-x-4 text-sm relative">
@@ -41,7 +40,7 @@
                     <div
                         class="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
                         <a href="{{route('profil')}}" class="block px-4 py-2 hover:bg-gray-100 transition">Profil</a>
-                        <a href="{{ url('/orders') }}" class="block px-4 py-2 hover:bg-gray-100 transition">Pesanan</a>
+                        <a href="{{ url('/pesanan') }}" class="block px-4 py-2 hover:bg-gray-100 transition">Pesanan</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"

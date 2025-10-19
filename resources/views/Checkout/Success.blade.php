@@ -73,7 +73,7 @@
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a href="{{ route('home') }}" class="bg-orange-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-orange-700 transition">Lanjut Belanja</a>
-                    <a href="#" class="bg-gray-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-700 transition">Lihat Status Pesanan</a>
+                    <a href="{{ route('orders') }}" class="bg-gray-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-700 transition">Lihat Pesanan</a>
                 </div>
             </div>
         </div>

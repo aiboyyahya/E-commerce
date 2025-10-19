@@ -57,6 +57,7 @@ class Pengaturan extends Page
 
                     FileUpload::make('logo')
                         ->label('Logo')
+                        ->disk('public')
                         ->image()
                         ->directory('logos')
                         ->imageEditor()

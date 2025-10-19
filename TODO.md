@@ -1,25 +1,8 @@
-# TODO List for Checkout Implementation
+# TODO: Create Orders Page with Tracking
 
 ## Completed Tasks
-- [x] Create Transaction and TransactionItem models
-- [x] Add checkout methods to HomeController (checkout, checkoutPage, checkoutSuccess)
-- [x] Add routes for checkout page, checkout process, and success page
-- [x] Create Checkout.blade.php view for checkout form
-- [x] Create Checkout/Success.blade.php view for success page
-- [x] Update Cart.blade.php to link to checkout page
-- [x] Update Product Detail page to link to checkout page
-
-## Pending Tasks
-- [ ] Test the checkout flow
-- [ ] Integrate Midtrans payment gateway (as mentioned in the task)
-- [ ] Add authentication middleware to checkout routes (if needed)
-- [ ] Add validation for stock availability before checkout
-- [ ] Update product stock after successful payment (not just pending)
-- [ ] Add order history/tracking for users
-- [ ] Add email notifications for order confirmation
-
-## Notes
-- Status is set to 'pending' as requested, ready for Midtrans integration
-- Order code is generated uniquely with timestamp and user ID
-- Cart is cleared after successful checkout
-- Views are styled consistently with the existing design
+- [x] Analyze existing code and plan implementation
+- [x] Add /orders route in routes/web.php inside auth middleware
+- [x] Add orders method in HomeController to fetch user's transactions with relationships
+- [x] Create resources/views/orders.blade.php with order list and status tracking UI
+- [x] Update "Lihat Status Pesanan" link in Success.blade.php to point to orders route

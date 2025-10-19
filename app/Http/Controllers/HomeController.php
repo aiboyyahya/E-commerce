@@ -17,6 +17,12 @@ class HomeController extends Controller
         return view('home', compact('products'));
     }
 
+    public function kontak()
+    {
+        $store = \App\Models\Store::first();
+        return view('kontak', compact('store'));
+    }
+
     public function products(Request $request)
     {
         $query = Product::query();
@@ -184,5 +190,41 @@ class HomeController extends Controller
     {
         $transaction = Transaction::with('items.product')->findOrFail($id);
         return view('checkout.success', compact('transaction'));
+    }
+
+    public function orders()
+    {
+        $transactions = Transaction::with('items.product')
+            ->where('customer_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('pesanan', compact('transactions'));
+    }
+
+    public function orderDetail($id)
+    {
+        $transaction = Transaction::with('items.product')
+            ->where('customer_id', Auth::id())
+            ->findOrFail($id);
+
+        return view('detail-pesanan', compact('transaction'));
+    }
+
+    public function deleteOrder($id)
+    {
+        $transaction = Transaction::where('customer_id', Auth::id())
+            ->where('status', 'pending')
+            ->findOrFail($id);
+
+        // Restore stock
+        foreach ($transaction->items as $item) {
+            $product = $item->product;
+            $product->increment('stock', $item->quantity);
+        }
+
+        $transaction->delete();
+
+        return redirect()->route('orders')->with('success', 'Pesanan berhasil dibatalkan.');
     }
 }
