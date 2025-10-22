@@ -32,6 +32,7 @@
                     <p class="text-gray-700 text-base">{{ $product->description }}</p>
 
                     <div class="flex flex-col gap-4">
+                        @if($product->stock > 0)
                         <form action="{{ route('addToCart') }}" method="POST" id="addToCartForm" class="flex flex-col gap-4">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
@@ -79,6 +80,12 @@
                                 Checkout Sekarang
                             </button>
                         </form>
+                        @else
+                        <div class="mt-4 bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                            <p class="text-red-600 font-medium">Stok Habis</p>
+                            <p class="text-red-500 text-sm">Produk ini sedang tidak tersedia</p>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

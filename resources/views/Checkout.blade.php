@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Checkout - SHOP')
+@section('title', 'Checkout')
 
 @section('content')
 <section class="py-16 bg-gray-100">
@@ -27,7 +27,10 @@
                     </thead>
                     <tbody>
                         @php $total = 0; @endphp
-                        @foreach ($cart as $id => $item)
+                        @php
+                            $items = isset($directCheckout) && !empty($directCheckout) ? $directCheckout : $cart;
+                        @endphp
+                        @foreach ($items as $id => $item)
                         @php
                             $subtotal = $item['price'] * $item['quantity'];
                             $total += $subtotal;

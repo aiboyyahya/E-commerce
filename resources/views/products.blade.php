@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Produk - ' . ($store->store_name ?? ))
+@section('title', 'Produk' )
 
 @section('content')
 <section class="py-16 bg-gray-50">
@@ -74,15 +74,17 @@
                             Rp {{ number_format($product->purchase_price ?? 0, 0, ',', '.') }}
                         </p>
 
-                        <form action="{{ route('addToCart') }}" method="POST" class="mt-auto w-full">
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
-                            <input type="hidden" name="quantity" value="1">
-                             <button
+                        <div class="flex gap-2 mt-auto w-full">
+                            <form action="{{ route('addToCart') }}" method="POST" class="flex-1">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit"
                                     class="w-full bg-gray-800 text-white py-2 rounded-lg font-medium hover:bg-gray-900 transition">
                                     Tambah ke Keranjang
                                 </button>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @empty

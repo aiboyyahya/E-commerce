@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kontak - ' . ($store->store_name ?? ))
+@section('title', 'Kontak ')
 
 @section('content')
 <section class="py-16 bg-gray-50">
@@ -12,7 +12,7 @@
 
         @if($store)
             <div class="space-y-8">
-                <!-- Informasi Toko -->
+          
                 <div class="bg-white rounded-2xl shadow-sm p-8">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6">Informasi Toko</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -56,11 +56,11 @@
                                 </a>
                             </div>
                         @endif
-                        <!-- Add other contact if needed -->
+                     
                     </div>
                 </div>
 
-                <!-- Sosial Media -->
+         
                 <div class="bg-white rounded-2xl shadow-sm p-8">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6">Sosial Media</h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -97,14 +97,14 @@
                     </div>
                 </div>
 
-                <!-- Marketplace -->
+             
                 <div class="bg-white rounded-2xl shadow-sm p-8">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6">Marketplace</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         @if($store->shopee)
                             <div class="flex items-center space-x-3">
                                 <svg class="w-6 h-6 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
-                                    <!-- Shopee icon placeholder -->
+                               
                                     <circle cx="12" cy="12" r="10" fill="currentColor"/>
                                 </svg>
                                 <a href="{{ $store->shopee }}" target="_blank" class="text-blue-600 hover:underline">
@@ -115,7 +115,7 @@
                         @if($store->tokopedia)
                             <div class="flex items-center space-x-3">
                                 <svg class="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 24 24">
-                                    <!-- Tokopedia icon placeholder -->
+                                  
                                     <circle cx="12" cy="12" r="10" fill="currentColor"/>
                                 </svg>
                                 <a href="{{ $store->tokopedia }}" target="_blank" class="text-blue-600 hover:underline">
@@ -128,7 +128,7 @@
             </div>
         @else
             <div class="bg-white rounded-2xl shadow-sm p-8 text-center">
-                <p class="text-gray-500">Informasi toko belum tersedia.</p>
+                <p class="text-gray-500">Informasi toko belum tersedia</p>
             </div>
         @endif
     </div>

@@ -14,49 +14,94 @@
 
 <body class="bg-white text-gray-800">
 
-    <nav class="flex justify-between items-center px-8 py-4 shadow-sm border-b relative">
-        <div class="text-2xl font-bold">{{ $store->store_name ?? 'SHOP' }}</div>
+    <nav class="px-4 md:px-8 py-4 shadow-sm border-b relative bg-white">
+        <input type="checkbox" id="menu-toggle" class="peer hidden">
+        <div class="flex items-center justify-between w-full">
+            <div class="text-xl md:text-2xl font-bold">
+                {{ $store->store_name ?? 'SHOP' }}
+            </div>
+            <div class="hidden md:flex space-x-8 font-medium text-sm">
+                <a href="{{ url('/') }}"
+                    class="pb-1 {{ request()->is('/') ? 'text-black font-semibold border-b-2 border-black' : 'hover:text-gray-900' }} transition">
+                    Home
+                </a>
+                <a href="{{ url('/produk') }}"
+                    class="pb-1 {{ request()->is('produk*') ? 'text-black font-semibold border-b-2 border-black' : 'hover:text-gray-900' }} transition">
+                    Produk
+                </a>
+                <a href="{{ route('kontak') }}"
+                    class="pb-1 {{ request()->is('kontak') ? 'text-black font-semibold border-b-2 border-black' : 'hover:text-gray-900' }} transition">
+                    Kontak
+                </a>
+            </div>
 
-        <div class="flex space-x-6 text-sm font-medium">
-            <a href="{{ url('/') }}" class="hover:text-gray-900 transition">Home</a>
-            <a href="{{ url('/produk') }}" class="hover:text-gray-900 transition">Produk</a>
-            <a href="{{ route('kontak') }}" class="hover:text-gray-900 transition">Kontak</a>
+            <div class="flex items-center space-x-4 text-sm">
+
+                @auth
+
+                    <div class="relative group hidden md:block">
+                        <button
+                            class="flex items-center space-x-2 px-2 py-1 rounded-full hover:bg-gray-100 transition font-medium">
+                            <div
+                                class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-white font-semibold">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </div>
+                            <span>{{ Auth::user()->name }}</span>
+                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        <div
+                            class="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all z-50">
+                            <a href="{{ route('profil') }}" class="block px-4 py-2 hover:bg-gray-100 transition">Profil</a>
+                            <a href="{{ url('/pesanan') }}"
+                                class="block px-4 py-2 hover:bg-gray-100 transition">Pesanan</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit"
+                                    class="w-full text-left px-4 py-2 hover:bg-gray-100 transition">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                @endauth
+
+
+                <a href="{{ route('cart') }}" class="text-xl cursor-pointer hover:text-gray-700 transition">🛒</a>
+
+
+                <label for="menu-toggle" class="md:hidden cursor-pointer">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </label>
+            </div>
         </div>
 
-        <div class="flex items-center space-x-4 text-sm relative">
+        <!-- MOBILE MENU DROPDOWN -->
+        <div class="flex-col space-y-1 text-sm font-medium mt-4 hidden peer-checked:flex md:hidden border-t pt-3">
+            <a href="{{ url('/') }}" class="py-2 text-center  hover:bg-gray-50 transition">Home</a>
+            <a href="{{ url('/produk') }}" class="py-2 text-center  hover:bg-gray-50 transition">Produk</a>
+            <a href="{{ route('kontak') }}" class="py-2 text-center  hover:bg-gray-50 transition">Kontak</a>
+
             @auth
-                <div class="relative group">
-                    <button
-                        class="flex items-center space-x-2 px-2 py-1 rounded-full hover:bg-gray-100 transition font-medium">
-                        <div
-                            class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-white font-semibold">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                        </div>
-                        <span>{{ Auth::user()->name }}</span>
-                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div
-                        class="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all">
-                        <a href="{{ route('profil') }}" class="block px-4 py-2 hover:bg-gray-100 transition">Profil</a>
-                        <a href="{{ url('/pesanan') }}" class="block px-4 py-2 hover:bg-gray-100 transition">Pesanan</a>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit"
-                                class="w-full text-left px-4 py-2 hover:bg-gray-100 transition">Logout</button>
-                        </form>
-                    </div>
-                </div>
+                <a href="{{ route('profil') }}" class="py-2 text-center  hover:bg-gray-50 transition">Profil</a>
+                <a href="{{ url('/pesanan') }}" class="py-2 text-center  hover:bg-gray-50 transition">Pesanan</a>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="w-full py-2 text-center hover:bg-gray-50 transition">Logout</button>
+                </form>
             @else
                 <a href="{{ route('login.form') }}"
-                    class="px-4 py-2 bg-white border border-black rounded-full hover:bg-black hover:text-white transition font-medium">
+                    class="px-4 py-2 mt-1 bg-white border border-black rounded-full hover:bg-black hover:text-white transition font-medium text-center w-fit mx-auto">
                     Login
                 </a>
             @endauth
-            <a href="{{ route('cart') }}" class="text-xl cursor-pointer hover:text-gray-700 transition">🛒</a>
         </div>
     </nav>
+
 
     <main class="min-h-screen">
         @yield('content')
@@ -137,7 +182,9 @@
         <div class="text-center mt-4 text-gray-400">
             &copy; {{ date('Y') }} {{ $store->store_name ?? 'SHOP' }}. All rights reserved.
         </div>
+        
     </footer>
+
 
 </body>
 

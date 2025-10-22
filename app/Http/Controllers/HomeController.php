@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Store;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class HomeController extends Controller
 
     public function kontak()
     {
-        $store = \App\Models\Store::first();
+        $store = Store::first();
         return view('kontak', compact('store'));
     }
 
@@ -111,10 +112,11 @@ class HomeController extends Controller
     public function checkoutPage(Request $request)
     {
         $cart = session()->get('cart', []);
+        $directCheckout = null;
 
         if ($request->has('product_id') && $request->has('quantity') && $request->has('direct')) {
             $product = Product::findOrFail($request->product_id);
-            $cart = [
+            $directCheckout = [
                 $request->product_id => [
                     'name' => $product->product_name,
                     'price' => $product->purchase_price,
@@ -122,14 +124,14 @@ class HomeController extends Controller
                     'image' => $product->image,
                 ]
             ];
-            session()->put('cart', $cart);
+            session()->put('direct_checkout', $directCheckout);
         }
 
-        if (empty($cart)) {
+        if (empty($cart) && empty($directCheckout)) {
             return redirect()->route('cart')->with('error', 'Keranjang kosong!');
         }
 
-        return view('Checkout', compact('cart'));
+        return view('Checkout', compact('cart', 'directCheckout'));
     }
 
     public function checkout(Request $request)
@@ -140,12 +142,17 @@ class HomeController extends Controller
         ]);
 
         $cart = session()->get('cart', []);
-        if (empty($cart)) {
+        $directCheckout = session()->get('direct_checkout', []);
+
+        // Determine which items to process
+        $itemsToProcess = !empty($directCheckout) ? $directCheckout : $cart;
+
+        if (empty($itemsToProcess)) {
             return redirect()->route('checkout.page')->with('error', 'Keranjang kosong!');
         }
 
         $total = 0;
-        foreach ($cart as $id => $item) {
+        foreach ($itemsToProcess as $id => $item) {
             $product = Product::find($id);
             if (!$product) {
                 return redirect()->route('checkout.page')->with('error', "Produk {$item['name']} tidak ditemukan.");
@@ -169,7 +176,7 @@ class HomeController extends Controller
             'notes' => $request->notes,
         ]);
 
-        foreach ($cart as $id => $item) {
+        foreach ($itemsToProcess as $id => $item) {
             $product = Product::find($id);
             $product->decrement('stock', $item['quantity']);
 
@@ -181,7 +188,12 @@ class HomeController extends Controller
             ]);
         }
 
-        session()->forget('cart');
+        // Clear the appropriate session data
+        if (!empty($directCheckout)) {
+            session()->forget('direct_checkout');
+        } else {
+            session()->forget('cart');
+        }
 
         return redirect()->route('checkout.success', $transaction->id)
             ->with('success', 'Checkout berhasil! Pesanan Anda sedang diproses.');
@@ -218,7 +230,7 @@ class HomeController extends Controller
             ->where('status', 'pending')
             ->findOrFail($id);
 
-        // Restore stock
+  
         foreach ($transaction->items as $item) {
             $product = $item->product;
             $product->increment('stock', $item->quantity);
