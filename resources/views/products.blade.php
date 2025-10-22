@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Produk - ' . ($store->store_name ?? 'SHOP'))
+@section('title', 'Produk - ' . ($store->store_name ?? ))
 
 @section('content')
 <section class="py-16 bg-gray-50">

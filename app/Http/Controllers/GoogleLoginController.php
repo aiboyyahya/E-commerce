@@ -6,6 +6,7 @@ use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 
 class GoogleLoginController extends Controller
 {
@@ -42,5 +43,51 @@ class GoogleLoginController extends Controller
     {
         Auth::logout();
         return redirect('/')->with('success', 'Berhasil logout.');
+    }
+    public function loginform()
+       {
+        return view('auth.login');
+    }
+
+    public function loginEmail(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if (Auth::attempt($request->only('email', 'password'))) {
+            $request->session()->regenerate();
+            return redirect()->intended('/');
+        }
+
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ]);
+    }
+
+    public function registerForm()
+    {
+        return view('auth.register');
+    }
+
+    public function registerEmail(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:8|confirmed'
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'user',
+        ]);
+
+        Auth::login($user);
+
+        return redirect('/')->with('success', 'Akun berhasil dibuat dan Anda telah masuk.');
     }
 }

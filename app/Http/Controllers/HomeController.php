@@ -122,13 +122,14 @@ class HomeController extends Controller
                     'image' => $product->image,
                 ]
             ];
+            session()->put('cart', $cart);
         }
 
         if (empty($cart)) {
             return redirect()->route('cart')->with('error', 'Keranjang kosong!');
         }
 
-        return view('checkout', compact('cart'));
+        return view('Checkout', compact('cart'));
     }
 
     public function checkout(Request $request)
@@ -140,18 +141,18 @@ class HomeController extends Controller
 
         $cart = session()->get('cart', []);
         if (empty($cart)) {
-            return redirect()->route('cart')->with('error', 'Keranjang kosong!');
+            return redirect()->route('checkout.page')->with('error', 'Keranjang kosong!');
         }
 
         $total = 0;
         foreach ($cart as $id => $item) {
             $product = Product::find($id);
             if (!$product) {
-                return redirect()->route('cart')->with('error', "Produk {$item['name']} tidak ditemukan.");
+                return redirect()->route('checkout.page')->with('error', "Produk {$item['name']} tidak ditemukan.");
             }
 
             if ($product->stock < $item['quantity']) {
-                return redirect()->route('cart')->with('error', "Stok produk {$item['name']} tidak mencukupi.");
+                return redirect()->route('checkout.page')->with('error', "Stok produk {$item['name']} tidak mencukupi.");
             }
 
             $total += $item['price'] * $item['quantity'];
@@ -189,7 +190,7 @@ class HomeController extends Controller
     public function checkoutSuccess($id)
     {
         $transaction = Transaction::with('items.product')->findOrFail($id);
-        return view('checkout.success', compact('transaction'));
+        return view('Checkout.Success', compact('transaction'));
     }
 
     public function orders()

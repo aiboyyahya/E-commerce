@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pesanan Saya - SHOP')
+@section('title', 'Pesanan Saya ')
 
 @if(session('success'))
 <div class="fixed top-6 right-6 bg-green-600 text-white px-6 py-3 rounded-xl shadow-lg z-50">

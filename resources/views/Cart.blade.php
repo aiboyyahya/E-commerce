@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Keranjang Belanja - SHOP')
+@section('title', 'Keranjang Belanja ')
 
 @section('content')
     <section class="py-16 bg-gray-100 min-h-screen">

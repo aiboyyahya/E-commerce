@@ -8,12 +8,11 @@ use App\Http\Controllers\ProfilController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/login', function () {
-    return redirect()->route('google.redirect');
-})->name('login');
-
 Route::get('/google/redirect', [GoogleLoginController::class, 'redirectToGoogle'])->name('google.redirect');
-
+Route::get('/login' , [GoogleLoginController::class, 'loginForm'])->name('login.form');
+Route::post('/login/email' , [GoogleLoginController::class, 'loginEmail'])->name('login.email');
+Route::get('/register' , [GoogleLoginController::class, 'registerForm'])->name('register.form');
+Route::post('/register/email' , [GoogleLoginController::class, 'registerEmail'])->name('register.email');
 Route::get('/google/callback', [GoogleLoginController::class, 'handleGoogleCallback'])->name('google.callback');
 
 Route::post('/logout', [GoogleLoginController::class, 'logout'])->name('logout');
