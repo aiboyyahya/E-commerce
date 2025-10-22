@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Transactions\Schemas;
 
+use App\Models\Transaction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 use App\Models\User;
+use Filament\Forms\Components\ToggleButtons;
 
 class TransactionForm
 {
@@ -28,15 +30,22 @@ class TransactionForm
                     ->label('Alamat')
                     ->required()
                     ->columnSpanFull(),
-                Select::make('status')
+                ToggleButtons::make('status')
+                    ->inline()
                     ->options([
-                        'pending' => 'Pending',
-                        'packing' => 'Packing',
-                        'sent' => 'Sent',
-                        'done' => 'Done',
-                        'cancelled' => 'Cancelled',
+                        'pending' => 'Menunggu',
+                        'packing' => 'Dikemas',
+                        'sent' => 'Dikirim',
+                        'done' => 'Selesai',
+                        'cancelled' => 'Dibatalkan',
                     ])
-                    ->default('pending')
+                    ->icons([
+                        'pending' => 'heroicon-o-clock',
+                        'packing' => 'heroicon-o-archive-box',
+                        'sent' => 'heroicon-o-truck',
+                        'done' => 'heroicon-o-check-circle',
+                        'cancelled' => 'heroicon-o-x-circle',
+                    ])
                     ->required(),
                 TextInput::make('total')
                     ->disabled()

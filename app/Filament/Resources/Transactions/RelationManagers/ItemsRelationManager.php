@@ -59,15 +59,12 @@ class ItemsRelationManager extends RelationManager
             ->filters([
                 //
             ])
-          
+
             ->actions([
-                ActionsEditAction::make(),
-                ActionsDeleteAction::make(),
+                // Removed edit and delete actions to prevent modification
             ])
             ->bulkActions([
-                ActionsBulkActionGroup::make([
-                    ActionsDeleteBulkAction::make(),
-                ]),
+                // Removed bulk actions to prevent deletion
             ]);
     }
 }

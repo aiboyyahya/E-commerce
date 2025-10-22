@@ -17,8 +17,14 @@
     <nav class="px-4 md:px-8 py-4 shadow-sm border-b relative bg-white">
         <input type="checkbox" id="menu-toggle" class="peer hidden">
         <div class="flex items-center justify-between w-full">
-            <div class="text-xl md:text-2xl font-bold">
-                {{ $store->store_name ?? 'SHOP' }}
+            <div class="flex items-center space-x-3">
+                @if ($store && $store->logo)
+                    <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->store_name ?? 'Logo' }}"
+                        class="h-8 w-8 md:h-10 md:w-10 object-contain">
+                @endif
+                <div class="text-xl md:text-2xl font-bold">
+                    {{ $store->store_name ?? 'SHOP' }}
+                </div>
             </div>
             <div class="hidden md:flex space-x-8 font-medium text-sm">
                 <a href="{{ url('/') }}"
@@ -64,6 +70,11 @@
                             </form>
                         </div>
                     </div>
+                @else
+                    <a href="{{ route('login.form') }}"
+                        class="px-4 py-2 bg-white border border-black rounded-full hover:bg-black hover:text-white transition font-medium">
+                        Login
+                    </a>
                 @endauth
 
 
@@ -182,7 +193,7 @@
         <div class="text-center mt-4 text-gray-400">
             &copy; {{ date('Y') }} {{ $store->store_name ?? 'SHOP' }}. All rights reserved.
         </div>
-        
+
     </footer>
 
 

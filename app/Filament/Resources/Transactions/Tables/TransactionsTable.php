@@ -16,7 +16,6 @@ class TransactionsTable
         return $table
             ->columns([
                 TextColumn::make('order_code')
-                
                     ->searchable(),
                 TextColumn::make('customer.name')
                     ->label('Customer')
@@ -24,7 +23,8 @@ class TransactionsTable
                 TextColumn::make('address')
                 ->label('Alamat')
                     ->limit(50),
-                TextColumn::make('status'),
+                   TextColumn::make('status')
+                    ->badge(),
                 TextColumn::make('total')
                     ->money('IDR')
                     ->sortable(),
