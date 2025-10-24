@@ -8,17 +8,21 @@
             <div class="bg-white rounded-2xl shadow p-8">
                 <div class="text-green-500 mb-4">
                     <svg class="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"></path>
                     </svg>
                 </div>
                 <h1 class="text-3xl font-bold text-gray-900 mb-4">Checkout Berhasil!</h1>
-                <p class="text-gray-600 mb-6">Pesanan Anda telah diterima dan sedang diproses. Status pembayaran: <span class="font-semibold text-orange-600">Pending</span></p>
+                <p class="text-gray-600 mb-6">Pesanan Anda telah diterima dan sedang diproses.</p>
 
                 @if (session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
                         {{ session('success') }}
                     </div>
                 @endif
+
+
 
                 <div class="bg-gray-50 rounded-lg p-6 mb-6 text-left">
                     <h2 class="text-xl font-semibold mb-4">Detail Pesanan</h2>
@@ -30,6 +34,17 @@
                         <div>
                             <p class="text-sm text-gray-600">Status</p>
                             <p class="font-semibold text-orange-600">{{ ucfirst($transaction->status) }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Status Pembayaran</p>
+                            <p
+                                class="font-semibold
+                                @if ($transaction->payment_status == 'paid') text-green-600
+                                @elseif($transaction->payment_status == 'pending') text-orange-600
+                                @elseif($transaction->payment_status == 'failed') text-red-600
+                                @else text-gray-600 @endif">
+                                {{ ucfirst($transaction->payment_status) }}
+                            </p>
                         </div>
                         <div>
                             <p class="text-sm text-gray-600">Total</p>
@@ -61,10 +76,12 @@
                                     alt="{{ $item->product->product_name }}" class="w-16 h-16 object-cover rounded">
                                 <div class="flex-1">
                                     <p class="font-semibold">{{ $item->product->product_name }}</p>
-                                    <p class="text-sm text-gray-600">Jumlah: {{ $item->quantity }} | Harga: Rp {{ number_format($item->price, 0, ',', '.') }}</p>
+                                    <p class="text-sm text-gray-600">Jumlah: {{ $item->quantity }} | Harga: Rp
+                                        {{ number_format($item->price, 0, ',', '.') }}</p>
                                 </div>
                                 <div class="text-right">
-                                    <p class="font-semibold">Rp {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</p>
+                                    <p class="font-semibold">Rp
+                                        {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</p>
                                 </div>
                             </div>
                         @endforeach
@@ -72,10 +89,17 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="{{ route('home') }}" class="bg-orange-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-orange-700 transition">Lanjut Belanja</a>
-                    <a href="{{ route('orders') }}" class="bg-gray-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-700 transition">Lihat Pesanan</a>
+                    <a href="{{ route('home') }}"
+                        class="bg-orange-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-orange-700 transition">Lanjut
+                        Belanja</a>
+                    <a href="{{ route('orders') }}"
+                        class="bg-gray-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-700 transition">Lihat
+                        Pesanan</a>
                 </div>
             </div>
         </div>
     </section>
+
+
+
 @endsection

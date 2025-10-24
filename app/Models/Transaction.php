@@ -17,6 +17,8 @@ class Transaction extends Model
         'total',
         'notes',
         'payment_method',
+        'snap_token',
+        'payment_status',
     ];
 
     public function customer()

@@ -38,6 +38,16 @@ return [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URL'),
-    ]
+    ],
+
+    'midtrans' => [
+        'server_key' => env('MIDTRANS_SERVER_KEY'),
+        'client_key' => env('MIDTRANS_CLIENT_KEY'),
+        'is_production' => env('MIDTRANS_IS_PRODUCTION', false),
+        'options' => [],
+        'finish_url' => env('MIDTRANS_FINISH_URL'),
+        'unfinish_url' => env('MIDTRANS_UNFINISH_URL'),
+        'error_url' => env('MIDTRANS_ERROR_URL'),
+    ],
 
 ];

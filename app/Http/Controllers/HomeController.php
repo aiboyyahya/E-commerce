@@ -7,11 +7,20 @@ use App\Models\Product;
 use App\Models\Store;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
+use App\Services\MidtransService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
+    protected $midtransService;
+
+    public function __construct(MidtransService $midtransService)
+    {
+        $this->midtransService = $midtransService;
+    }
+
     public function index()
     {
         $products = Product::latest()->take(8)->get();
@@ -97,7 +106,7 @@ class HomeController extends Controller
     public function updateCart(Request $request, $id)
     {
         $request->validate([
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min=1',
         ]);
 
         $cart = session()->get('cart', []);
@@ -174,6 +183,8 @@ class HomeController extends Controller
             'status' => 'pending',
             'total' => $total,
             'notes' => $request->notes,
+            'payment_method' => 'midtrans',
+            'payment_status' => 'pending',
         ]);
 
         foreach ($itemsToProcess as $id => $item) {
@@ -188,6 +199,22 @@ class HomeController extends Controller
             ]);
         }
 
+        // Create Midtrans Snap Token
+        try {
+            $customer = [
+                'name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+                'phone' => Auth::user()->phone ?? '',
+            ];
+
+            $snapToken = $this->midtransService->createTransaction($transaction, $customer);
+            $transaction->update(['snap_token' => $snapToken]);
+
+        } catch (\Exception $e) {
+            // Handle error - maybe log it and continue
+            Log::error('Midtrans Snap Token creation failed: ' . $e->getMessage());
+        }
+
         // Clear the appropriate session data
         if (!empty($directCheckout)) {
             session()->forget('direct_checkout');
@@ -195,8 +222,14 @@ class HomeController extends Controller
             session()->forget('cart');
         }
 
-        return redirect()->route('checkout.success', $transaction->id)
-            ->with('success', 'Checkout berhasil! Pesanan Anda sedang diproses.');
+        return redirect()->route('checkout.payment', $transaction->id)
+            ->with('success', 'Checkout berhasil! Silakan lakukan pembayaran.');
+    }
+
+    public function checkoutPayment($id)
+    {
+        $transaction = Transaction::with('items.product')->findOrFail($id);
+        return view('Checkout.Payment', compact('transaction'));
     }
 
     public function checkoutSuccess($id)
@@ -230,7 +263,6 @@ class HomeController extends Controller
             ->where('status', 'pending')
             ->findOrFail($id);
 
-  
         foreach ($transaction->items as $item) {
             $product = $item->product;
             $product->increment('stock', $item->quantity);

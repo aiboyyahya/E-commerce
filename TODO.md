@@ -1,6 +1,3 @@
-# TODO: Arrange Dashboard Widgets Side by Side and Complete Dashboard Name
-
--   [x] Create custom Dashboard page at app/Filament/Pages/Dashboard.php
--   [x] Create OverviewStatsWidget.php with products and categories counts side by side
--   [x] Update AdminPanelProvider.php to use custom Dashboard and new widget
--   [x] Delete old ProductsCountWidget.php and CategoriesCountWidget.php
+- [x] Modify MidtransService.php to return only the snap token string instead of the full response array.
+- [x] Update HomeController.php checkout method to use the returned token directly for updating the transaction.
+- [x] Remove the dd() statement in HomeController.php checkoutPayment method to allow normal flow.
