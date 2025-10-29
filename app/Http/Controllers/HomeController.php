@@ -207,9 +207,14 @@ class HomeController extends Controller
                 'phone' => Auth::user()->phone ?? '',
             ];
 
-            $snapToken = $this->midtransService->createTransaction($transaction, $customer);
-            $transaction->update(['snap_token' => $snapToken]);
+            $result = $this->midtransService->createTransaction($transaction, $customer);
+            $snapToken = $result['token'] ?? null;
 
+            if (!$snapToken) {
+                throw new \Exception('Snap token not found in Midtrans response');
+            }
+
+            $transaction->update(['snap_token' => $snapToken]);
         } catch (\Exception $e) {
             // Handle error - maybe log it and continue
             Log::error('Midtrans Snap Token creation failed: ' . $e->getMessage());
@@ -271,5 +276,43 @@ class HomeController extends Controller
         $transaction->delete();
 
         return redirect()->route('orders')->with('success', 'Pesanan berhasil dibatalkan.');
+    }
+
+    public function getSnapToken($id)
+    {
+        $transaction = Transaction::with('items.product')->findOrFail($id);
+
+        // Ensure the transaction belongs to the authenticated user
+        if ($transaction->customer_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        // If snap_token already exists, return it
+        if ($transaction->snap_token) {
+            return response()->json(['snap_token' => $transaction->snap_token]);
+        }
+
+        // Otherwise, create a new snap token
+        try {
+            $customer = [
+                'name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+                'phone' => Auth::user()->phone ?? '',
+            ];
+
+            $result = $this->midtransService->createTransaction($transaction, $customer);
+            $snapToken = $result['token'] ?? null;
+
+            if (!$snapToken) {
+                throw new \Exception('Snap token not found in Midtrans response');
+            }
+
+            $transaction->update(['snap_token' => $snapToken]);
+
+            return response()->json(['snap_token' => $snapToken]);
+        } catch (\Exception $e) {
+            Log::error('Midtrans Snap Token creation failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to create snap token'], 500);
+        }
     }
 }

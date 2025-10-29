@@ -33,48 +33,76 @@
 
     <script src="https://app.sandbox.midtrans.com/snap/snap.js"
         data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const loadingDiv = document.getElementById('payment-loading');
             const readyDiv = document.getElementById('payment-ready');
             const manualBtn = document.getElementById('manual-pay-btn');
 
-            // Show ready state after 2 seconds
-            setTimeout(function() {
+            // Setelah halaman siap, siapkan tampilan loading
+            setTimeout(() => {
                 loadingDiv.classList.add('hidden');
                 readyDiv.classList.remove('hidden');
             }, 2000);
 
-            // Auto trigger payment after 3 seconds
-            setTimeout(function() {
+            // Auto trigger setelah 3 detik
+            setTimeout(() => {
                 triggerPayment();
             }, 3000);
 
-            // Manual trigger button
-            manualBtn.addEventListener('click', function() {
-                triggerPayment();
-            });
+            manualBtn.addEventListener('click', triggerPayment);
 
+            // Function utama
             function triggerPayment() {
-                snap.pay('{{ $transaction->snap_token }}', {
-                    onSuccess: function(result) {
-                        console.log('Payment success:', result);
-                        window.location.href = '{{ route('checkout.success', $transaction->id) }}';
-                    },
-                    onPending: function(result) {
-                        console.log('Payment pending:', result);
-                        window.location.href = '{{ route('checkout.success', $transaction->id) }}';
-                    },
-                    onError: function(result) {
-                        console.log('Payment error:', result);
-                        alert('Pembayaran gagal. Silakan coba lagi.');
-                        window.location.href = '{{ route('checkout.page') }}';
-                    },
-                    onClose: function() {
-                        console.log('Payment modal closed');
-                        // Optional: redirect or show message
+                //Ambil snap token dari server via endpoint Laravel
+                fetch("{{ route('transaction.getSnapToken', $transaction->id) }}", {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
                     }
-                });
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!data.snap_token) {
+                            throw new Error("Snap token tidak ditemukan di server.");
+                        }
+
+                        console.log("Snap token:", data.snap_token);
+
+                        // Jalankan Midtrans Snap popup
+                        snap.pay(data.snap_token, {
+                            onSuccess: function(result) {
+                                console.log("Payment success:", result);
+                                window.location.href =
+                                    "{{ route('checkout.success', $transaction->id) }}";
+                            },
+                            onPending: function(result) {
+                                console.log("Payment pending:", result);
+                                window.location.href =
+                                    "{{ route('checkout.success', $transaction->id) }}";
+                            },
+                            onError: function(result) {
+                                console.error("Payment error:", result);
+                                alert("Pembayaran gagal. Silakan coba lagi.");
+                                window.location.href = "{{ route('checkout.page') }}";
+                            },
+                            onClose: function() {
+                                console.log("Modal pembayaran ditutup.");
+                            }
+                        });
+                    })
+                    .catch(err => {
+                        console.error("Gagal ambil snap token:", err);
+                        alert("Tidak bisa memulai pembayaran. Coba refresh halaman");
+                    });
             }
         });
     </script>
