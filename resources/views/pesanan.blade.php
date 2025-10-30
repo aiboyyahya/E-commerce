@@ -119,6 +119,12 @@
                                         Detail
                                     </a>
 
+                                    @if($transaction->payment_status == 'pending')
+                                    <a href="{{ route('checkout.payment', $transaction->id) }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+                                        Bayar Sekarang
+                                    </a>
+                                    @endif
+
                                     @if($transaction->status == 'pending')
                                     <form method="POST" action="{{ route('order.delete', $transaction->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')">
                                         @csrf

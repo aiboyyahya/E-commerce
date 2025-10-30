@@ -11,9 +11,9 @@ class MidtransService
 {
     public function __construct()
     {
-        Config::$isProduction = (bool) config('midtrans.is_production', false);
-        Config::$serverKey = config('midtrans.server_key');
-        Config::$clientKey = config('midtrans.client_key');
+        Config::$isProduction = (bool) config('services.midtrans.is_production', false);
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$clientKey = config('services.midtrans.client_key');
         Config::$isSanitized = true;
         Config::$curlOptions = config('midtrans.options', []);
         if (! isset(Config::$curlOptions[CURLOPT_HTTPHEADER])) {

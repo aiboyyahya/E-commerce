@@ -1,3 +1,2 @@
-- [x] Modify MidtransService.php to return only the snap token string instead of the full response array.
-- [x] Update HomeController.php checkout method to use the returned token directly for updating the transaction.
-- [x] Remove the dd() statement in HomeController.php checkoutPayment method to allow normal flow.
+- [x] Tambahkan tombol "Bayar Sekarang" di halaman pesanan (pesanan.blade.php) untuk transaksi dengan payment_status 'pending'
+- [x] Tambahkan tombol "Bayar Sekarang" di halaman detail pesanan (detail-pesanan.blade.php) untuk transaksi dengan payment_status 'pending'
