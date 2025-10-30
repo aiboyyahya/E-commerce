@@ -1,2 +1,2 @@
-- [x] Tambahkan tombol "Bayar Sekarang" di halaman pesanan (pesanan.blade.php) untuk transaksi dengan payment_status 'pending'
-- [x] Tambahkan tombol "Bayar Sekarang" di halaman detail pesanan (detail-pesanan.blade.php) untuk transaksi dengan payment_status 'pending'
+-   [x] Tambahkan tombol "Bayar Sekarang" di halaman pesanan (pesanan.blade.php) untuk transaksi dengan payment_status 'pending'
+-   [x] Tambahkan tombol "Bayar Sekarang" di halaman detail pesanan (detail-pesanan.blade.php) untuk transaksi dengan payment_status 'pending'
