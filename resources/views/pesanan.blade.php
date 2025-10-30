@@ -31,123 +31,46 @@
         @else
         <div class="space-y-8">
             @foreach($transactions as $transaction)
-            <div
-                class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition-all duration-300">
-                <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-                    <div class="flex-1">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <div>
-                                <h3 class="text-xl font-semibold text-gray-900">Order #{{ $transaction->order_code }}</h3>
-                                <p class="text-sm text-gray-500 mt-1">{{ $transaction->created_at->format('d M Y, H:i') }}</p>
+            @php
+                $statusClass = match($transaction->status) {
+                    'pending' => 'bg-yellow-100 text-yellow-800',
+                    'packing' => 'bg-blue-100 text-blue-800',
+                    'sent' => 'bg-purple-100 text-purple-800',
+                    'done' => 'bg-green-100 text-green-800',
+                    default => 'bg-red-100 text-red-800'
+                };
+            @endphp
+
+            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition-all duration-300">
+                <div class="flex justify-end mb-4">
+                    <span class="inline-flex px-4 py-1.5 rounded-full text-sm font-medium {{ $statusClass }}">
+                        {{ ucfirst($transaction->status) }}
+                    </span>
+                </div>
+
+                <div class="space-y-5">
+                    @foreach($transaction->items as $item)
+                    <div class="bg-gray-50 p-5 rounded-2xl hover:bg-gray-100 transition">
+                        <div class="flex items-center gap-4">
+                            <img src="{{ $item->product->image ? asset('storage/' . $item->product->image) : 'https://via.placeholder.com/80' }}"
+                                class="w-20 h-20 object-cover rounded-xl shadow-sm">
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-gray-900 text-lg truncate">{{ $item->product->product_name }}</p>
+                                <p class="text-sm text-gray-500 mt-1">Jumlah: {{ $item->quantity }} × Rp
+                                    {{ number_format($item->price, 0, ',', '.') }}</p>
                             </div>
-                            @php
-                                $statusClass = match($transaction->status) {
-                                    'pending' => 'bg-yellow-100 text-yellow-800',
-                                    'packing' => 'bg-blue-100 text-blue-800',
-                                    'sent' => 'bg-purple-100 text-purple-800',
-                                    'done' => 'bg-green-100 text-green-800',
-                                    default => 'bg-red-100 text-red-800'
-                                };
-                            @endphp
-                            <span class="inline-flex px-3 py-1 rounded-full text-sm font-medium {{ $statusClass }}">
-                                {{ ucfirst($transaction->status) }}
-                            </span>
+                            <p class="text-gray-800 font-bold text-lg">Rp
+                                {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</p>
                         </div>
 
-                        <div class="mt-8 relative">
-                            @php
-                                $statuses = [
-                                    ['key' => 'pending', 'title' => 'Pending', 'label' => 'Menunggu'],
-                                    ['key' => 'packing', 'title' => 'Packing', 'label' => 'Dikemas'],
-                                    ['key' => 'sent', 'title' => 'Dikirim', 'label' => 'Dalam Pengiriman'],
-                                    ['key' => 'done', 'title' => 'Selesai', 'label' => 'Pesanan Selesai']
-                                ];
-                                $currentIndex = array_search($transaction->status, array_column($statuses, 'key'));
-                            @endphp
-                            <div class="flex justify-between items-start relative">
-                                @foreach($statuses as $index => $step)
-                                <div class="flex-1 flex flex-col items-center text-center">
-                                    <p
-                                        class="text-xs font-semibold mb-2 {{ $index <= $currentIndex ? 'text-orange-600' : 'text-gray-400' }}">
-                                        {{ $step['title'] }}
-                                    </p>
-                                    <div
-                                        class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold {{ $index <= $currentIndex ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-500' }}">
-                                        {{ $index + 1 }}
-                                    </div>
-                                    @if($index < count($statuses) - 1)
-                                    <div
-                                        class="w-full h-1 {{ $index < $currentIndex ? 'bg-orange-500' : 'bg-gray-200' }}">
-                                    </div>
-                                    @endif
-                                    <p
-                                        class="text-xs mt-2 {{ $index <= $currentIndex ? 'text-orange-600 font-medium' : 'text-gray-500' }}">
-                                        {{ $step['label'] }}
-                                    </p>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <div class="border-t border-gray-100 mt-8 pt-6">
-                            <h4 class="text-sm font-semibold text-gray-800 mb-4 uppercase tracking-wide">Detail Produk</h4>
-                            <div class="space-y-5">
-                                @foreach($transaction->items as $item)
-                                <div class="flex items-center gap-4">
-                                    <img src="{{ $item->product->image ? asset('storage/' . $item->product->image) : 'https://via.placeholder.com/80' }}"
-                                        class="w-20 h-20 object-cover rounded-xl shadow-sm">
-                                    <div class="flex-1 min-w-0">
-                                        <p class="font-medium text-gray-900 truncate">{{ $item->product->product_name }}</p>
-                                        <p class="text-sm text-gray-500 mt-1">Jumlah: {{ $item->quantity }} × Rp
-                                            {{ number_format($item->price, 0, ',', '.') }}</p>
-                                    </div>
-                                    <p class="text-gray-800 font-semibold">Rp
-                                        {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</p>
-                                </div>
-                                @endforeach
-                            </div>
-
-                            <div
-                                class="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6 border-t border-gray-100 pt-6">
-                                <div>
-                                    <p class="text-sm text-gray-500 mb-1">Alamat Pengiriman</p>
-                                    <p class="text-sm font-medium text-gray-800">{{ $transaction->address }}</p>
-                                    @if($transaction->notes)
-                                    <p class="text-sm text-gray-500 mt-1">Catatan: {{ $transaction->notes }}</p>
-                                    @endif
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-sm text-gray-500 mb-1">Total Pembayaran</p>
-                                    <p class="text-2xl font-extrabold text-orange-500">Rp
-                                        {{ number_format($transaction->total, 0, ',', '.') }}</p>
-                                </div>
-                            </div>
-
-                            <div class="mt-8 flex flex-wrap items-center gap-3">
-                                <a href="{{ route('order.detail', $transaction->id) }}"
-                                    class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition">
-                                    Detail
-                                </a>
-                                @if($transaction->payment_status == 'pending')
-                                <a href="{{ route('checkout.payment', $transaction->id) }}"
-                                    class="bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition">
-                                    Bayar Sekarang
-                                </a>
-                                @endif
-                                @if($transaction->status == 'pending')
-                                <form method="POST" action="{{ route('order.delete', $transaction->id) }}"
-                                    onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition">
-                                        Batalkan
-                                    </button>
-                                </form>
-                                @endif
-                            </div>
+                        <div class="mt-4 text-right">
+                            <a href="{{ route('order.detail', $transaction->id) }}"
+                                class="inline-block bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg text-sm font-medium shadow-md transition">
+                                Lihat Detail
+                            </a>
                         </div>
                     </div>
+                    @endforeach
                 </div>
             </div>
             @endforeach
