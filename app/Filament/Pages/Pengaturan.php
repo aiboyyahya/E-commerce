@@ -31,64 +31,64 @@ class Pengaturan extends Page
 
     public function mount(): void
     {
-       $store = Store::first();
+        $store = Store::first();
 
         if ($store) {
             $this->form->fill($store->toArray());
         }
     }
 
-   public function form(Schema $schema): Schema
-{
-    return $schema
-        ->schema([
-            Section::make('Informasi Toko')
-                ->schema([
-                    TextInput::make('store_name')
-                        ->label('Nama Toko')
-                        ->required()
-                        ->maxLength(255)
-                        ->columnSpan('full'), // full width
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->schema([
+                Section::make('Informasi Toko')
+                    ->schema([
+                        TextInput::make('store_name')
+                            ->label('Nama Toko')
+                            ->required()
+                            ->maxLength(255)
+                            ->columnSpan('full'), // full width
 
-                    TextInput::make('address')
-                        ->label('Alamat')
-                        ->maxLength(255)
-                        ->columnSpan('full'),
+                        TextInput::make('address')
+                            ->label('Alamat')
+                            ->maxLength(255)
+                            ->columnSpan('full'),
 
-                    FileUpload::make('logo')
-                        ->label('Logo')
-                        ->disk('public')
-                        ->image()
-                        ->directory('logos')
-                        ->imageEditor()
-                        ->columnSpan('full'),
+                        FileUpload::make('logo')
+                            ->label('Logo')
+                            ->disk('public')
+                            ->image()
+                            ->directory('logos')
+                            ->imageEditor()
+                            ->columnSpan('full'),
 
-                    Textarea::make('description')
-                        ->label('Deskripsi')
-                        ->rows(4)
-                        ->columnSpan('full'),
-                ])
-                ->columns(2), 
+                        Textarea::make('description')
+                            ->label('Deskripsi')
+                            ->rows(4)
+                            ->columnSpan('full'),
+                    ])
+                    ->columns(2),
 
-            Section::make('Sosial Media')
-                ->schema([
-                    TextInput::make('instagram')->label('Instagram')->prefixIcon('heroicon-o-link')->columnSpan('full'),
-                    TextInput::make('tiktok')->label('Tiktok')->prefixIcon('heroicon-o-link')->columnSpan('full'),
-                    TextInput::make('whatsapp')->label('WhatsApp')->prefixIcon('heroicon-o-phone')->columnSpan('full'),
-                    TextInput::make('facebook')->label('Facebook')->prefixIcon('heroicon-o-link')->columnSpan('full'),
-                ])
-                ->columns(1),
+                Section::make('Sosial Media')
+                    ->schema([
+                        TextInput::make('instagram')->label('Instagram')->prefixIcon('heroicon-o-link')->columnSpan('full'),
+                        TextInput::make('tiktok')->label('Tiktok')->prefixIcon('heroicon-o-link')->columnSpan('full'),
+                        TextInput::make('whatsapp')->label('WhatsApp')->prefixIcon('heroicon-o-phone')->columnSpan('full'),
+                        TextInput::make('facebook')->label('Facebook')->prefixIcon('heroicon-o-link')->columnSpan('full'),
+                    ])
+                    ->columns(1),
 
-            Section::make('Marketplace')
-                ->schema([
-                    TextInput::make('shopee')->label('Shopee')->columnSpan('full'),
-                    TextInput::make('tokopedia')->label('Tokopedia')->columnSpan('full'),
-                ])
-                ->columns(1),
-        ])
-        ->columns(1) 
-        ->statePath('data');
-}
+                Section::make('Marketplace')
+                    ->schema([
+                        TextInput::make('shopee')->label('Shopee')->columnSpan('full'),
+                        TextInput::make('tokopedia')->label('Tokopedia')->columnSpan('full'),
+                    ])
+                    ->columns(1),
+            ])
+            ->columns(1)
+            ->statePath('data');
+    }
 
 
     public function save()
@@ -100,12 +100,15 @@ class Pengaturan extends Page
         if (!$store) {
             $store = Store::first() ?? new Store();
         }
-      $store->fill($data);
-$store->save();
+        $store->fill($data);
+        $store->save();
+
+        // Clear cache agar perubahan langsung terlihat
+        cache()->forget('store_data');
 
         Notification::make()
             ->title('Pengaturan berhasil disimpan!')
             ->success()
             ->send();
-}
+    }
 }
