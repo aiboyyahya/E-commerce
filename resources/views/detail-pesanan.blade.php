@@ -15,13 +15,16 @@
                     <p class="text-sm text-gray-400">{{ $transaction->created_at->format('d M Y, H:i') }}</p>
                 </div>
                 <div class="mt-4 lg:mt-0">
-                    <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium
-                        @if($transaction->status == 'pending') bg-yellow-100 text-yellow-700
-                        @elseif($transaction->status == 'packing') bg-blue-100 text-blue-700
-                        @elseif($transaction->status == 'sent') bg-purple-100 text-purple-700
-                        @elseif($transaction->status == 'done') bg-green-100 text-green-700
-                        @else bg-red-100 text-red-700
-                        @endif">
+                    @php
+                        $statusClass = match($transaction->status) {
+                            'pending' => 'bg-yellow-100 text-yellow-700',
+                            'packing' => 'bg-blue-100 text-blue-700',
+                            'sent' => 'bg-purple-100 text-purple-700',
+                            'done' => 'bg-green-100 text-green-700',
+                            default => 'bg-red-100 text-red-700'
+                        };
+                    @endphp
+                    <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium {{ $statusClass }}">
                         {{ ucfirst($transaction->status) }}
                     </span>
                 </div>
@@ -37,23 +40,24 @@
 
                     @foreach($statuses as $index => $status)
                         <div class="flex flex-col items-center flex-1 relative">
-                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold
-                                @if($index <= $currentIndex)
-                                    @if($status == 'pending') bg-yellow-500 text-white
-                                    @elseif($status == 'packing') bg-blue-500 text-white
-                                    @elseif($status == 'sent') bg-purple-500 text-white
-                                    @elseif($status == 'done') bg-green-500 text-white
-                                    @endif
-                                @else bg-gray-300 text-gray-600
-                                @endif">
+                            @php
+                                $circleClass = $index <= $currentIndex
+                                    ? match($status) {
+                                        'pending' => 'bg-yellow-500 text-white',
+                                        'packing' => 'bg-blue-500 text-white',
+                                        'sent' => 'bg-purple-500 text-white',
+                                        'done' => 'bg-green-500 text-white',
+                                        default => 'bg-gray-300 text-gray-600'
+                                    }
+                                    : 'bg-gray-300 text-gray-600';
+                                $lineClass = $index < $currentIndex ? 'bg-orange-500' : 'bg-gray-200';
+                            @endphp
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold {{ $circleClass }}">
                                 {{ $index + 1 }}
                             </div>
 
                             @if($index < count($statuses)-1)
-                                <div class="absolute top-1/2 left-full w-full h-1
-                                    @if($index < $currentIndex) bg-orange-500
-                                    @else bg-gray-200
-                                    @endif"></div>
+                                <div class="absolute top-1/2 left-full w-full h-1 {{ $lineClass }}"></div>
                             @endif
 
                             <span class="text-sm text-gray-600 mt-2">

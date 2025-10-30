@@ -37,12 +37,15 @@
                         </div>
                         <div>
                             <p class="text-sm text-gray-600">Status Pembayaran</p>
-                            <p
-                                class="font-semibold
-                                @if ($transaction->payment_status == 'paid') text-green-600
-                                @elseif($transaction->payment_status == 'pending') text-orange-600
-                                @elseif($transaction->payment_status == 'failed') text-red-600
-                                @else text-gray-600 @endif">
+                            @php
+                                $paymentStatusClass = match($transaction->payment_status) {
+                                    'paid' => 'text-green-600',
+                                    'pending' => 'text-orange-600',
+                                    'failed' => 'text-red-600',
+                                    default => 'text-gray-600'
+                                };
+                            @endphp
+                            <p class="font-semibold {{ $paymentStatusClass }}">
                                 {{ ucfirst($transaction->payment_status) }}
                             </p>
                         </div>

@@ -40,13 +40,16 @@
                                 <h3 class="text-xl font-semibold text-gray-900">Order #{{ $transaction->order_code }}</h3>
                                 <p class="text-sm text-gray-500 mt-1">{{ $transaction->created_at->format('d M Y, H:i') }}</p>
                             </div>
-                            <span
-                                class="inline-flex px-3 py-1 rounded-full text-sm font-medium
-                                    @if($transaction->status == 'pending') bg-yellow-100 text-yellow-800
-                                    @elseif($transaction->status == 'packing') bg-blue-100 text-blue-800
-                                    @elseif($transaction->status == 'sent') bg-purple-100 text-purple-800
-                                    @elseif($transaction->status == 'done') bg-green-100 text-green-800
-                                    @else bg-red-100 text-red-800 @endif">
+                            @php
+                                $statusClass = match($transaction->status) {
+                                    'pending' => 'bg-yellow-100 text-yellow-800',
+                                    'packing' => 'bg-blue-100 text-blue-800',
+                                    'sent' => 'bg-purple-100 text-purple-800',
+                                    'done' => 'bg-green-100 text-green-800',
+                                    default => 'bg-red-100 text-red-800'
+                                };
+                            @endphp
+                            <span class="inline-flex px-3 py-1 rounded-full text-sm font-medium {{ $statusClass }}">
                                 {{ ucfirst($transaction->status) }}
                             </span>
                         </div>
