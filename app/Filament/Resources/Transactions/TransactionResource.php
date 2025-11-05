@@ -21,6 +21,7 @@ class TransactionResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-currency-dollar';
 
     protected static string|UnitEnum|null $navigationGroup = 'Manajemen Order';
+    protected static ?int $navigationSort = 20;
 
     protected static ?string $navigationLabel = 'Transaksi';
 

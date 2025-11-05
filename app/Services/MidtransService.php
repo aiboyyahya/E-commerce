@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Store;
 use App\Models\Transaction;
 use Illuminate\Support\Arr;
 use Midtrans\Config;
@@ -11,11 +12,18 @@ class MidtransService
 {
     public function __construct()
     {
-        Config::$isProduction = (bool) config('services.midtrans.is_production', false);
-        Config::$serverKey = config('services.midtrans.server_key');
-        Config::$clientKey = config('services.midtrans.client_key');
+        $store = Store::first(); // Assuming single store, adjust if needed
+
+        if (!$store || empty($store->midtrans_server_key) || empty($store->midtrans_client_key)) {
+            throw new \RuntimeException('Midtrans keys belum dikonfigurasi di pengaturan toko.');
+        }
+
+        Config::$isProduction = (bool) $store->is_production;
+        Config::$serverKey = $store->midtrans_server_key;
+        Config::$clientKey = $store->midtrans_client_key;
+
         Config::$isSanitized = true;
-        Config::$curlOptions = config('midtrans.options', []);
+        Config::$curlOptions = config('services.midtrans.options', []);
         if (! isset(Config::$curlOptions[CURLOPT_HTTPHEADER])) {
             Config::$curlOptions[CURLOPT_HTTPHEADER] = [];
         }

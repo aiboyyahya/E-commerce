@@ -2,8 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\CategoriesCountWidget;
-use App\Filament\Widgets\ProductsCountWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -40,14 +38,9 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
-                \App\Filament\Pages\Dashboard::class,
+                   \App\Filament\Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
-                \App\Filament\Widgets\OverviewStatsWidget::class,
-            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -81,4 +74,4 @@ class AdminPanelProvider extends PanelProvider
                 return route('user.homepage');
             });
     }
-}
+} 

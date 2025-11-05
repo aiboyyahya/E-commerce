@@ -40,6 +40,7 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URL'),
     ],
 
+    /*
     'midtrans' => [
         'server_key' => env('MIDTRANS_SERVER_KEY'),
         'client_key' => env('MIDTRANS_CLIENT_KEY'),
@@ -49,5 +50,6 @@ return [
         'unfinish_url' => env('MIDTRANS_UNFINISH_URL'),
         'error_url' => env('MIDTRANS_ERROR_URL'),
     ],
+    */
 
 ];

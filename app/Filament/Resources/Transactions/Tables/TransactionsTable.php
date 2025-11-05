@@ -34,6 +34,17 @@ class TransactionsTable
                     ->color(fn (string $state): string => match ($state) {
                         'midtrans' => 'primary',
                     }),
+                TextColumn::make('payment_status')
+                    ->label('Status Pembayaran')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'pending' => 'warning',
+                        'settlement' => 'success',
+                        'cancel' => 'danger',
+                        'expire' => 'gray',
+                        'deny' => 'danger',
+                        default => 'gray',
+                    }),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

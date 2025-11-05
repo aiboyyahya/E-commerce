@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Store;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +16,29 @@ class MidtransWebhookController extends Controller
 
             Log::info('Midtrans Webhook Received', $payload);
 
+            // Verify webhook signature using server key from database
+            $store = Store::first();
+            if (!$store || empty($store->midtrans_server_key)) {
+                Log::error('Midtrans server key not configured in database');
+                return response()->json(['status' => 'error', 'message' => 'Configuration error'], 500);
+            }
+
+            $serverKey = $store->midtrans_server_key;
+            $signatureKey = $request->header('x-callback-signature') ?? '';
+
+            // Create signature string
+            $signatureString = $payload['order_id'] . $payload['status_code'] . $payload['gross_amount'] . $serverKey;
+
+            // Generate expected signature
+            $expectedSignature = hash('sha512', $signatureString);
+
+            if ($signatureKey !== $expectedSignature) {
+                Log::warning('Invalid webhook signature', [
+                    'received' => $signatureKey,
+                    'expected' => $expectedSignature
+                ]);
+                return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 403);
+            }
 
             $orderId = $payload['order_id'];
             $transactionStatus = $payload['transaction_status'];
@@ -28,32 +52,40 @@ class MidtransWebhookController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'Transaction not found'], 404);
             }
 
+            $updateData = [];
+
             switch ($transactionStatus) {
                 case 'capture':
                     if ($fraudStatus == 'challenge') {
-                        $transaction->update(['payment_status' => 'pending']);
-                    } else if ($fraudStatus == 'accept') {
-                        $transaction->update(['payment_status' => 'paid', 'status' => 'packing']);
+                        $updateData['payment_status'] = 'pending';
+                    } elseif ($fraudStatus == 'accept') {
+                        $updateData['payment_status'] = 'settlement';
+                        $updateData['status'] = 'packing';
                     }
                     break;
                 case 'settlement':
-                    $transaction->update(['payment_status' => 'paid', 'status' => 'packing']);
+                    $updateData['payment_status'] = 'settlement';
+                    $updateData['status'] = 'packing';
                     break;
                 case 'pending':
-                    $transaction->update(['payment_status' => 'pending']);
+                    $updateData['payment_status'] = 'pending';
                     break;
                 case 'deny':
-                    $transaction->update(['payment_status' => 'failed']);
+                    $updateData['payment_status'] = 'deny';
                     break;
                 case 'expire':
-                    $transaction->update(['payment_status' => 'expired']);
+                    $updateData['payment_status'] = 'expire';
                     break;
                 case 'cancel':
-                    $transaction->update(['payment_status' => 'failed']);
+                    $updateData['payment_status'] = 'cancel';
                     break;
                 default:
                     Log::warning('Unknown transaction status: ' . $transactionStatus);
                     break;
+            }
+
+            if (!empty($updateData)) {
+                $transaction->update($updateData);
             }
 
             Log::info('Transaction updated', [

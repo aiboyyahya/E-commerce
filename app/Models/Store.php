@@ -20,5 +20,8 @@ class Store extends Model
         'facebook',
         'shopee',
         'tokopedia',
+        'midtrans_client_key',
+        'midtrans_server_key',
+        'is_production',
     ];
 }
