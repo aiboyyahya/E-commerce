@@ -37,7 +37,7 @@
                     </a>
 
                     <div class="p-4 text-center flex flex-col flex-1">
-                        <h4 class="text-base md:text-lg font-bold text-gray-900 truncate mb-1">
+                        <h4 class="text-base md:text-lg font-bold text-black truncate mb-1">
                             {{ $product->product_name }}
                         </h4>
 
@@ -45,7 +45,7 @@
                             <p class="text-xs text-gray-500 line-clamp-2 mb-2">{{ $product->description }}</p>
                         @endif
 
-                        <p class="text-lg font-bold text-orange-600 mb-4">
+                        <p class="text-lg font-bold text-gray-600 mb-4">
                             Rp {{ number_format($product->purchase_price ?? 0, 0, ',', '.') }}
                         </p>
 
