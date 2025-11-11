@@ -3,7 +3,7 @@
 @section('title', $product->product_name)
 
 @section('content')
-    <section class="min-h-screen bg-gray-100 py-20">
+    <section class="min-h-screen bg-white py-20">
         <div class="max-w-7xl mx-auto px-6 lg:px-16">
             <div class="bg-white rounded-3xl p-10 shadow-md border border-gray-200">
                 <h1 class="text-4xl font-bold text-center  text-gray-900">Detail Produk</h1>

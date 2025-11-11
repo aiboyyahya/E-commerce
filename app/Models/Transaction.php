@@ -19,6 +19,13 @@ class Transaction extends Model
         'payment_method',
         'snap_token',
         'payment_status',
+        'province',
+        'city',
+        'district',
+        'postal_code',
+        'courier',
+        'courier_service',
+        'tracking_number',
     ];
 
     public function customer()

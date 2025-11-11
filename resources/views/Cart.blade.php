@@ -3,7 +3,7 @@
 @section('title', 'Keranjang Belanja ')
 
 @section('content')
-    <section class="py-16 bg-gray-100 min-h-screen">
+    <section class="py-16 bg-white min-h-screen">
         <div class="max-w-6xl mx-auto px-6 lg:px-10">
             <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">Keranjang Belanja</h1>
 

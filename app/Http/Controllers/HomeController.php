@@ -131,6 +131,7 @@ class HomeController extends Controller
                     'price' => $product->purchase_price,
                     'quantity' => (int) $request->quantity,
                     'image' => $product->image,
+                    'weight' => $product->weight ?? 1000, // default weight if not set
                 ]
             ];
             session()->put('direct_checkout', $directCheckout);
@@ -140,7 +141,19 @@ class HomeController extends Controller
             return redirect()->route('cart')->with('error', 'Keranjang kosong!');
         }
 
-        return view('Checkout', compact('cart', 'directCheckout'));
+        // Calculate total weight
+        $totalWeight = 0;
+        $items = !empty($directCheckout) ? $directCheckout : $cart;
+        foreach ($items as $item) {
+            $totalWeight += ($item['weight'] ?? 1000) * $item['quantity'];
+        }
+
+        // Get store origin info
+        $originCityId = config('services.rajaongkir.origin_city_id', 469);
+        $originDistrictId = config('services.rajaongkir.origin_district_id');
+        $defaultItemWeight = 1000; // default weight in grams
+
+        return view('Checkout', compact('cart', 'directCheckout', 'totalWeight', 'originCityId', 'originDistrictId', 'defaultItemWeight'));
     }
 
     public function checkout(Request $request)

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\MidtransWebhookController;
+use App\Http\Controllers\RajaOngkirController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -25,6 +26,12 @@ Route::get('/produk', [HomeController::class, 'products'])->name('products');
 Route::get('/product/{id}', [HomeController::class, 'Product'])->name('product.show');
 
 Route::get('/kontak', [HomeController::class, 'kontak'])->name('kontak');
+
+Route::get('/rajaongkir/provinces', [RajaOngkirController::class, 'getProvinces'])->name('rajaongkir.provinces');
+Route::get('/rajaongkir/cities', [RajaOngkirController::class, 'getCities'])->name('rajaongkir.cities');
+Route::get('/rajaongkir/districts', [RajaOngkirController::class, 'getDistricts'])->name('rajaongkir.districts');
+Route::post('/rajaongkir/cost', [RajaOngkirController::class, 'getShippingCost'])->name('rajaongkir.cost');
+Route::get('/rajaongkir/couriers', [RajaOngkirController::class, 'getCouriers'])->name('rajaongkir.couriers');
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/add-to-cart', [HomeController::class, 'addToCart'])->name('addToCart');

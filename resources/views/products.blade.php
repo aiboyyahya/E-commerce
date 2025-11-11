@@ -3,7 +3,7 @@
 @section('title', 'Produk' )
 
 @section('content')
-<section class="py-16 bg-gray-50">
+<section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-6 lg:px-16">
         <div class="text-center mb-12">
             <h1 class="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">✨ Semua Produk</h1>
@@ -70,7 +70,7 @@
                             <p class="text-sm text-gray-500 line-clamp-2 mb-2">{{ $product->description }}</p>
                         @endif
 
-                        <p class="text-lg font-bold text-orange-600 mb-4">
+                        <p class="text-lg font-bold text-gray-600 mb-4">
                             Rp {{ number_format($product->purchase_price ?? 0, 0, ',', '.') }}
                         </p>
 

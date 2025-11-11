@@ -23,5 +23,7 @@ class Store extends Model
         'midtrans_client_key',
         'midtrans_server_key',
         'is_production',
+        'origin_city_id',
+        'origin_district_id',
     ];
 }

@@ -3,7 +3,7 @@
 @section('title', 'Kontak ')
 
 @section('content')
-<section class="py-16 bg-gray-50">
+<section class="py-16 bg-white">
     <div class="max-w-4xl mx-auto px-6 lg:px-16">
         <div class="text-center mb-12">
             <h1 class="text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">📞 Kontak Kami</h1>

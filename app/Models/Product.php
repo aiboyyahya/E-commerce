@@ -20,6 +20,7 @@ class Product extends Model
         'status',
         'image',
         'category_id',
+        'weight',
     ];
 
     protected static function booted()

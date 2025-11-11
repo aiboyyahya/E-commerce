@@ -3,7 +3,7 @@
 @section('title', 'Detail Pesanan')
 
 @section('content')
-<section class="py-16 bg-gray-50 min-h-screen">
+<section class="py-16 bg-white min-h-screen">
     <div class="max-w-7xl mx-auto px-6 lg:px-12">
         <div class="bg-white border border-gray-200 rounded-3xl shadow-md p-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
 

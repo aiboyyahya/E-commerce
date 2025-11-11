@@ -117,6 +117,20 @@ class Pengaturan extends Page
                             ->columnSpan('full'),
                     ])
                     ->columns(1),
+
+                Section::make('Lokasi Asal Pengiriman')
+                    ->schema([
+                        TextInput::make('origin_city_id')
+                            ->label('Origin City ID')
+                            ->helperText('ID kota asal pengiriman dari RajaOngkir')
+                            ->columnSpan('full'),
+
+                        TextInput::make('origin_district_id')
+                            ->label('Origin District ID')
+                            ->helperText('ID kecamatan asal pengiriman dari RajaOngkir (opsional, lebih spesifik)')
+                            ->columnSpan('full'),
+                    ])
+                    ->columns(1),
             ])
             ->columns(1)
             ->statePath('data');
