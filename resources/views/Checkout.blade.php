@@ -3,106 +3,125 @@
 @section('title', 'Checkout')
 
 @section('content')
-<section class="py-16 bg-gray-50 min-h-screen">
-    <div class="max-w-6xl mx-auto border border-gray-200 rounded-3xl bg-white shadow-md p-10 grid grid-cols-1 md:grid-cols-2 gap-12">
-        
-        <div class="md:col-span-2 text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Checkout</h1>
-            <p class="text-gray-600 mt-2">Pastikan data dan pesanan Anda sudah benar sebelum melakukan pembayaran.</p>
-        </div>
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-4xl mx-auto px-6 lg:px-16">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Checkout</h1>
 
-        <form id="checkout-form" action="{{ route('checkout') }}" method="POST" class="space-y-8">
-            @csrf
-            <div class="border border-gray-200 rounded-3xl p-8 shadow-sm bg-white">
-                <h2 class="text-2xl font-semibold text-gray-900 mb-6">Metode Pembayaran</h2>
+            @if (session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                    {{ session('error') }}
+                </div>
+            @endif
 
-                <div class="mb-6">
-                    <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Alamat Pengiriman</label>
-                    <textarea name="address" id="address" rows="3" required
-                        class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-orange-600 focus:border-orange-600">{{ old('address', Auth::user()->address ?? '') }}</textarea>
+            <div class="bg-white rounded-2xl shadow p-6">
+                <h2 class="text-xl font-semibold mb-4">Detail Pesanan</h2>
+                <div class="overflow-x-auto mb-6">
+                    <table class="w-full text-gray-700">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="text-left py-4">Produk</th>
+                                <th class="text-center py-4">Harga</th>
+                                <th class="text-center py-4">Jumlah</th>
+                                <th class="text-center py-4">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $total = 0; @endphp
+                            @php
+                                $items = isset($directCheckout) && !empty($directCheckout) ? $directCheckout : $cart;
+                            @endphp
+                            @foreach ($items as $id => $item)
+                                @php
+                                    $subtotal = $item['price'] * $item['quantity'];
+                                    $total += $subtotal;
+                                @endphp
+                                <tr class="border-b">
+                                    <td class="py-4 flex items-center gap-4">
+                                        <img src="{{ $item['image'] ? asset('storage/' . $item['image']) : 'https://via.placeholder.com/100' }}"
+                                            class="w-16 h-16 object-cover rounded">
+                                        <span>{{ $item['name'] }}</span>
+                                    </td>
+                                    <td class="text-center py-4">Rp {{ number_format($item['price'], 0, ',', '.') }}</td>
+                                    <td class="text-center py-4">{{ $item['quantity'] }}</td>
+                                    <td class="text-center py-4">Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
-                <div class="mb-6">
-                    <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Catatan</label>
-                    <textarea name="notes" id="notes" rows="3"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-orange-600 focus:border-orange-600"
-                        placeholder="Tambahkan catatan untuk penjual jika ada..."></textarea>
+                <div class="text-right mb-6">
+                    <div class="text-xl font-semibold">
+                        Total: Rp {{ number_format($total, 0, ',', '.') }}
+                    </div>
                 </div>
 
-                <div class="border border-gray-300 rounded-xl p-5 bg-gray-50">
-                    <label class="flex items-center cursor-pointer">
-                        <input type="radio" name="payment_method" value="midtrans" checked
-                            class="form-radio text-orange-600" />
-                        <span class="ml-3 font-medium text-gray-900">
-                            Midtrans (QRIS / Virtual Account / E-Wallet)
-                        </span>
-                    </label>
-                </div>
-            </div>
-
-            <button type="submit"
-                class="mt-6 w-full bg-black text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition">
-                KONFIRMASI PESANAN
-            </button>
-        </form>
-
-        <div class="flex flex-col max-w-lg border border-gray-200 rounded-3xl p-8 shadow-sm bg-white">
-            <h2 class="text-2xl font-semibold text-gray-900 mb-6">Detail Produk</h2>
-
-            <ul class="space-y-6">
-                @php $total = 0; @endphp
-                @php
-                    $items = isset($directCheckout) && !empty($directCheckout) ? $directCheckout : $cart;
-                @endphp
-                @foreach ($items as $id => $item)
-                    @php
-                        $subtotal = $item['price'] * $item['quantity'];
-                        $total += $subtotal;
-                    @endphp
-                    <li class="flex gap-4 items-center border-b border-gray-100 pb-4">
-                        <img src="{{ $item['image'] ? asset('storage/' . $item['image']) : 'https://via.placeholder.com/100' }}"
-                            alt="{{ $item['name'] }}" class="w-24 h-20 object-cover rounded-lg" />
+                <form id="checkout-form" action="{{ route('checkout') }}" method="POST">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <p class="text-lg font-semibold text-gray-900">{{ $item['name'] }}</p>
-                            <p class="text-sm text-gray-600">Kategori: Helm</p>
-                            <p class="text-sm text-gray-600">Jumlah: {{ $item['quantity'] }}</p>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Pengiriman</label>
+                            <textarea name="address" rows="4"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500" required>{{ Auth::user()->address }}</textarea>
                         </div>
-                        <div class="ml-auto font-semibold text-gray-900">
-                            Rp{{ number_format($subtotal, 0, ',', '.') }}
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label>
+                            <textarea name="notes" rows="4"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500"></textarea>
                         </div>
-                    </li>
-                @endforeach
-            </ul>
+                    </div>
 
-            <div class="mt-8 border-t pt-6 text-gray-900">
-                <h3 class="text-xl font-semibold mb-4">Ringkasan Pesanan</h3>
-                <div class="flex justify-between mb-2">
-                    <span>Subtotal</span>
-                    <span>Rp{{ number_format($total, 0, ',', '.') }}</span>
-                </div>
-                <div class="flex justify-between mb-6">
-                    <span>Ongkir</span>
-                    <span>Rp0</span>
-                </div>
-                <div class="flex justify-between font-bold text-lg border-t pt-4">
-                    <span>Total</span>
-                    <span>Rp{{ number_format($total, 0, ',', '.') }}</span>
-                </div>
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Metode Pembayaran</label>
+                        <div class="space-y-3">
+                            <label
+                                class="flex items-center p-4 border rounded-xl cursor-pointer hover:border-orange-500 transition">
+                                <input type="radio" name="payment_method" value="midtrans"
+                                    class="w-5 h-5 text-orange-600 focus:ring-orange-500 border-gray-300" checked>
+                                <span class="ml-3 text-gray-800 font-medium">Midtrans (QRIS / VA / E-Wallet)</span>
+                            </label>
+
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-end gap-4">
+                        <button type="submit" id="checkout-btn"
+                            class="bg-orange-600 text-white py-2 px-4 rounded hover:bg-orange-700 transition">
+                            <span id="btn-text">Konfirmasi Pesanan</span>
+                            <span id="btn-loading" class="hidden">
+                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                Memproses...
+                            </span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<script src="https://app.sandbox.midtrans.com/snap/snap.js"
-    data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('services.midtrans.client_key') }}"></script>
 
-<script>
-    document.getElementById('checkout-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const btn = this.querySelector('button[type="submit"]');
-        btn.disabled = true;
-        btn.textContent = 'Memproses...';
-        this.submit();
-    });
-</script>
+    <script>
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const btn = document.getElementById('checkout-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnLoading = document.getElementById('btn-loading');
+
+            btn.disabled = true;
+            btnText.classList.add('hidden');
+            btnLoading.classList.remove('hidden');
+
+            this.submit();
+        });
+    </script>
 @endsection
