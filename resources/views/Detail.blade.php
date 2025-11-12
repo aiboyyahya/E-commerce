@@ -25,7 +25,7 @@
                             @foreach ($product->images as $img)
                                 <button type="button"
                                     onclick="document.getElementById('main-product-image').src='{{ asset('storage/' . $img->image_file) }}'"
-                                    class="w-20 h-20 rounded-xl overflow-hidden border border-gray-200 hover:border-orange-500 transition-all duration-200 shadow-sm">
+                                    class="w-16 h-16 rounded-xl overflow-hidden border border-gray-200 hover:border-orange-500 transition-all duration-200 shadow-sm">
                                     <img src="{{ asset('storage/' . $img->image_file) }}" alt="Thumbnail"
                                         class="object-cover w-full h-full">
                                 </button>
@@ -33,48 +33,42 @@
                         </div>
                     @endif
 
-                    <div class="bg-gray-50 rounded-3xl border border-gray-200 p-6 max-h-[400px] overflow-y-auto shadow-inner">
-                        <h3 class="text-xl font-bold text-gray-900 mb-4">Ulasan Produk</h3>
+                    <div class="bg-gray-50 rounded-3xl border border-gray-200 p-4 max-h-[300px] overflow-y-auto shadow-inner">
+                        <h3 class="text-lg font-bold text-gray-900 mb-3">Ulasan Produk</h3>
                         @if (isset($ratings) && $ratings->count())
-                            <div class="space-y-6">
+                            <div class="space-y-4">
                                 @foreach ($ratings as $rating)
-                                    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 flex flex-col sm:flex-row gap-5">
-                                        <div class="flex flex-col items-center sm:w-32">
-                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 shadow-sm">
+                                    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 flex flex-col sm:flex-row gap-4">
+                                        <div class="flex flex-col items-center sm:w-28">
+                                            <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-200 shadow-sm">
                                                 <img src="{{ $rating->customer && $rating->customer->profile_photo ? asset('storage/' . $rating->customer->profile_photo) : 'https://ui-avatars.com/api/?name=' . urlencode($rating->customer->name ?? 'User') . '&background=random' }}"
                                                     alt="Profile" class="object-cover w-full h-full">
                                             </div>
-                                            <p class="text-sm font-semibold text-gray-800 mt-3 text-center">
+                                            <p class="text-xs font-semibold text-gray-800 mt-2 text-center truncate w-20">
                                                 {{ $rating->customer->name ?? 'Pengguna' }}
                                             </p>
                                         </div>
                                         <div class="flex-1">
-                                            <div class="flex items-center text-yellow-400 mb-2">
+                                            <div class="flex items-center text-yellow-400 mb-1">
                                                 @for ($i = 1; $i <= 5; $i++)
-                                                    @if ($i <= $rating->rating)
-                                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.947a1 1 0 00.95.69h4.148c.969 0 1.371 1.24.588 1.81l-3.36 2.44a1 1 0 00-.364 1.118l1.287 3.948c.3.921-.755 1.688-1.538 1.118l-3.36-2.44a1 1 0 00-1.175 0l-3.36 2.44c-.783.57-1.838-.197-1.538-1.118l1.286-3.947a1 1 0 00-.364-1.118L2.037 9.374c-.783-.57-.38-1.81.588-1.81h4.148a1 1 0 00.95-.69l1.286-3.947z"/>
-                                                        </svg>
-                                                    @else
-                                                        <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.947a1 1 0 00.95.69h4.148c.969 0 1.371 1.24.588 1.81l-3.36 2.44a1 1 0 00-.364 1.118l1.287 3.948c.3.921-.755 1.688-1.538 1.118l-3.36-2.44a1 1 0 00-1.175 0l-3.36 2.44c-.783.57-1.838-.197-1.538-1.118l1.286-3.947a1 1 0 00-.364-1.118L2.037 9.374c-.783-.57-.38-1.81.588-1.81h4.148a1 1 0 00.95-.69l1.286-3.947z"/>
-                                                        </svg>
-                                                    @endif
+                                                    <svg class="w-4 h-4 {{ $i <= $rating->rating ? 'text-yellow-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.947a1 1 0 00.95.69h4.148c.969 0 1.371 1.24.588 1.81l-3.36 2.44a1 1 0 00-.364 1.118l1.287 3.948c.3.921-.755 1.688-1.538 1.118l-3.36-2.44a1 1 0 00-1.175 0l-3.36 2.44c-.783.57-1.838-.197-1.538-1.118l1.286-3.947a1 1 0 00-.364-1.118L2.037 9.374c-.783-.57-.38-1.81.588-1.81h4.148a1 1 0 00.95-.69l1.286-3.947z"/>
+                                                    </svg>
                                                 @endfor
                                             </div>
                                             @if ($rating->comment)
-                                                <p class="text-gray-800 italic mb-3 leading-relaxed">"{{ $rating->comment }}"</p>
+                                                <p class="text-gray-800 text-sm leading-snug mb-2">"{{ $rating->comment }}"</p>
                                             @endif
                                             @if ($rating->image)
                                                 <img src="{{ asset('storage/' . $rating->image) }}" alt="Rating image"
-                                                    class="w-28 h-28 object-cover rounded-lg border border-gray-200 shadow-sm">
+                                                    class="w-20 h-20 object-cover rounded-lg border border-gray-200 shadow-sm">
                                             @endif
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
                         @else
-                            <div class="bg-white border border-gray-200 rounded-xl p-6 text-center text-gray-500 shadow-sm">
+                            <div class="bg-white border border-gray-200 rounded-xl p-4 text-center text-gray-500 shadow-sm text-sm">
                                 Belum ada ulasan untuk produk ini.
                             </div>
                         @endif
