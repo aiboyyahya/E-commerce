@@ -58,8 +58,9 @@ class HomeController extends Controller
         // Calculate average rating and count
         $avgRating = (float) Rating::where('product_id', $product->id)->avg('rating');
         $ratingCount = (int) Rating::where('product_id', $product->id)->count();
+        $ratings = Rating::where('product_id', $product->id)->with('customer')->latest()->get();
 
-        return view('detail', compact('product', 'avgRating', 'ratingCount'));
+        return view('detail', compact('product', 'avgRating', 'ratingCount', 'ratings'));
     }
 
     public function addToCart(Request $request)
