@@ -418,6 +418,57 @@ class RajaOngkirController extends Controller
     }
 
     /**
+     * Get tracking information (waybill)
+     */
+    public function getWaybill(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'waybill' => 'required|string',
+            'courier' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        $payload = [
+            'waybill' => $request->waybill,
+            'courier' => $request->courier,
+        ];
+
+        try {
+            $response = app('rajaongkir')->waybill($payload);
+        } catch (\Throwable $exception) {
+            Log::error('Exception while requesting RajaOngkir waybill', [
+                'waybill' => $request->waybill,
+                'courier' => $request->courier,
+                'message' => $exception->getMessage(),
+            ]);
+
+            return response()->json([
+                'error' => 'Tidak dapat terhubung ke layanan RajaOngkir.'
+            ], 503);
+        }
+
+        if ($response->successful()) {
+            return response()->json($response->json());
+        }
+
+        Log::error('Failed to get RajaOngkir waybill', [
+            'waybill' => $request->waybill,
+            'courier' => $request->courier,
+            'status' => $response->status(),
+            'body' => $response->body(),
+        ]);
+
+        $message = data_get($response->json(), 'rajaongkir.status.description')
+            ?? data_get($response->json(), 'message')
+            ?? 'Failed to get waybill information';
+
+        return response()->json(['error' => $message], $response->status() ?: 500);
+    }
+
+    /**
      * Get all available couriers
      */
     public function getCouriers()

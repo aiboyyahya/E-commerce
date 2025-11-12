@@ -7,11 +7,12 @@
         <div class="max-w-7xl mx-auto px-6 lg:px-16">
             <div class="bg-white rounded-3xl p-10 shadow-md border border-gray-200">
                 <h1 class="text-4xl font-bold text-center  text-gray-900">Detail Produk</h1>
-                <p class="text-gray-600 mt-2 mb-10 text-center">{{$product->product_name}}</p>
+                <p class="text-gray-600 mt-2 mb-10 text-center">{{ $product->product_name }}</p>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
                     <div>
-                        <div class="aspect-square bg-gray-50 rounded-3xl shadow-inner flex items-center justify-center p-8 border border-gray-200">
+                        <div
+                            class="aspect-square bg-gray-50 rounded-3xl shadow-inner flex items-center justify-center p-8 border border-gray-200">
                             <img id="main-product-image"
                                 src="{{ $product->image ? asset('storage/' . $product->image) : 'https://via.placeholder.com/500x500' }}"
                                 alt="{{ $product->product_name }}" class="object-contain w-full h-full rounded-2xl">
@@ -35,14 +36,27 @@
                         <h2 class="text-4xl font-semibold text-gray-900">{{ $product->product_name }}</h2>
                         <p class="mt-2 text-gray-700">{{ $product->description }}</p>
 
-                        <div class="flex items-center mt-4 space-x-2 text-yellow-300">
-                            @for ($i = 0; $i < 5; $i++)
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.947a1 1 0 00.95.69h4.148c.969 0 1.371 1.24.588 1.81l-3.36 2.44a1 1 0 00-.364 1.118l1.287 3.948c.3.921-.755 1.688-1.538 1.118l-3.36-2.44a1 1 0 00-1.175 0l-3.36 2.44c-.783.57-1.838-.197-1.538-1.118l1.286-3.947a1 1 0 00-.364-1.118L2.037 9.374c-.783-.57-.38-1.81.588-1.81h4.148a1 1 0 00.95-.69l1.286-3.947z" />
-                                </svg>
-                            @endfor
-                            <span class="text-gray-600 text-sm font-medium">({{ $product->rating ?? 121 }} ulasan)</span>
+                        <div class="flex items-center mt-4 space-x-2">
+                            <div class="flex items-center text-yellow-400">
+                                @php
+                                    $avg = isset($avgRating) ? round($avgRating) : 0;
+                                @endphp
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $avg)
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.947a1 1 0 00.95.69h4.148c.969 0 1.371 1.24.588 1.81l-3.36 2.44a1 1 0 00-.364 1.118l1.287 3.948c.3.921-.755 1.688-1.538 1.118l-3.36-2.44a1 1 0 00-1.175 0l-3.36 2.44c-.783.57-1.838-.197-1.538-1.118l1.286-3.947a1 1 0 00-.364-1.118L2.037 9.374c-.783-.57-.38-1.81.588-1.81h4.148a1 1 0 00.95-.69l1.286-3.947z" />
+                                        </svg>
+                                    @else
+                                        <svg class="w-5 h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.947a1 1 0 00.95.69h4.148c.969 0 1.371 1.24.588 1.81l-3.36 2.44a1 1 0 00-.364 1.118l1.287 3.948c.3.921-.755 1.688-1.538 1.118l-3.36-2.44a1 1 0 00-1.175 0l-3.36 2.44c-.783.57-1.838-.197-1.538-1.118l1.286-3.947a1 1 0 00-.364-1.118L2.037 9.374c-.783-.57-.38-1.81.588-1.81h4.148a1 1 0 00.95-.69l1.286-3.947z" />
+                                        </svg>
+                                    @endif
+                                @endfor
+                            </div>
+                            <span class="text-gray-600 text-sm font-medium">({{ $ratingCount ?? 0 }} ulasan) • rata-rata
+                                {{ number_format($avgRating ?? 0, 1) }}</span>
                         </div>
 
                         <p class="mt-6 text-3xl font-bold text-gray-900">

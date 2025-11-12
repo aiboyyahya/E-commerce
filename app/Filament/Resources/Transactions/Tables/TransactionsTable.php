@@ -15,29 +15,32 @@ class TransactionsTable
     {
         return $table
             ->columns([
-                TextColumn::make('order_code')
-                    ->searchable(),
                 TextColumn::make('customer.name')
                     ->label('Customer')
                     ->sortable(),
-                TextColumn::make('address')
-                ->label('Alamat')
-                    ->limit(50),
-                   TextColumn::make('status')
+                TextColumn::make('province')
+                    ->label('Provinsi'),
+                TextColumn::make('city')
+                    ->label('Kota'),
+                TextColumn::make('district')
+                    ->label('Kecamatan'),
+                TextColumn::make('postal_code')
+                    ->label('Kode Pos'),
+                TextColumn::make('order_code')
+                    ->searchable(),
+                TextColumn::make('status')
+                    ->label('Status Pesanan')
                     ->badge(),
-                TextColumn::make('total')
-                    ->money('IDR')
-                    ->sortable(),
                 TextColumn::make('payment_method')
-                ->label('Metode Pembayaran')
+                    ->label('Metode Pembayaran')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'midtrans' => 'primary',
                     }),
                 TextColumn::make('payment_status')
                     ->label('Status Pembayaran')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'pending' => 'warning',
                         'settlement' => 'success',
                         'cancel' => 'danger',
@@ -45,6 +48,20 @@ class TransactionsTable
                         'deny' => 'danger',
                         default => 'gray',
                     }),
+                TextColumn::make('courier')
+                    ->label('Kurir')
+                    ->badge(),
+                TextColumn::make('courier_service')
+                    ->label('Layanan Kurir'),
+                    TextColumn::make('shipping_cost')
+                    ->label('Ongkir')
+                    ->money('IDR'),
+                TextColumn::make('total')
+                    ->money('IDR')
+                    ->sortable(),
+                TextColumn::make('tracking_number')
+                    ->label('Nomor Resi')
+                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

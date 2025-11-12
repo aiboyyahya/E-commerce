@@ -38,11 +38,11 @@
                         <div>
                             <p class="text-sm text-gray-600">Status Pembayaran</p>
                             @php
-                                $paymentStatusClass = match($transaction->payment_status) {
+                                $paymentStatusClass = match ($transaction->payment_status) {
                                     'paid' => 'text-green-600',
                                     'pending' => 'text-orange-600',
                                     'failed' => 'text-red-600',
-                                    default => 'text-gray-600'
+                                    default => 'text-gray-600',
                                 };
                             @endphp
                             <p class="font-semibold {{ $paymentStatusClass }}">
@@ -86,6 +86,65 @@
                                     <p class="font-semibold">Rp
                                         {{ number_format($item->price * $item->quantity, 0, ',', '.') }}</p>
                                 </div>
+                            </div>
+                            <div class="mt-3 w-full">
+                                @auth
+                                    @php
+                                        $productId = $item->product->id;
+                                    @endphp
+                                    @if (isset($userRatings) && $userRatings->has($productId))
+                                        @php $r = $userRatings->get($productId); @endphp
+                                        <div class="mt-2 text-sm text-gray-700">
+                                            <div class="flex items-center gap-2">
+                                                <div class="text-yellow-400 flex items-center">
+                                                    @for ($i = 1; $i <= 5; $i++)
+                                                        @if ($i <= $r->rating)
+                                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path
+                                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.947a1 1 0 00.95.69h4.148c.969 0 1.371 1.24.588 1.81l-3.36 2.44a1 1 0 00-.364 1.118l1.287 3.948c.3.921-.755 1.688-1.538 1.118l-3.36-2.44a1 1 0 00-1.175 0l-3.36 2.44c-.783.57-1.838-.197-1.538-1.118l1.286-3.947a1 1 0 00-.364-1.118L2.037 9.374c-.783-.57-.38-1.81.588-1.81h4.148a1 1 0 00.95-.69l1.286-3.947z" />
+                                                            </svg>
+                                                        @else
+                                                            <svg class="w-4 h-4 text-gray-300" fill="currentColor"
+                                                                viewBox="0 0 20 20">
+                                                                <path
+                                                                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.947a1 1 0 00.95.69h4.148c.969 0 1.371 1.24.588 1.81l-3.36 2.44a1 1 0 00-.364 1.118l1.287 3.948c.3.921-.755 1.688-1.538 1.118l-3.36-2.44a1 1 0 00-1.175 0l-3.36 2.44c-.783.57-1.838-.197-1.538-1.118l1.286-3.947a1 1 0 00-.364-1.118L2.037 9.374c-.783-.57-.38-1.81.588-1.81h4.148a1 1 0 00.95-.69l1.286-3.947z" />
+                                                            </svg>
+                                                        @endif
+                                                    @endfor
+                                                </div>
+                                                <div class="text-gray-600 text-sm">Anda memberi rating:
+                                                    <strong>{{ $r->rating }}</strong>
+                                                </div>
+                                            </div>
+                                            @if ($r->comment)
+                                                <p class="mt-2 text-gray-700">"{{ $r->comment }}"</p>
+                                            @endif
+                                        </div>
+                                    @else
+                                        <form action="{{ route('ratings.store') }}" method="POST"
+                                            enctype="multipart/form-data" class="mt-2">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $productId }}">
+                                            <input type="hidden" name="transaction_id" value="{{ $transaction->id }}">
+                                            <div class="flex items-center gap-2">
+                                                <label class="text-sm text-gray-700">Beri rating:</label>
+                                                <select name="rating" class="rounded border-gray-300 px-2 py-1">
+                                                    @for ($s = 1; $s <= 5; $s++)
+                                                        <option value="{{ $s }}">{{ $s }}</option>
+                                                    @endfor
+                                                </select>
+                                                <input type="file" name="image" accept="image/*" class="ml-2">
+                                            </div>
+                                            <div class="mt-2">
+                                                <textarea name="comment" rows="2" class="w-full rounded border-gray-200" placeholder="Tulis ulasan singkat..."></textarea>
+                                            </div>
+                                            <div class="mt-2 text-right">
+                                                <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded">Kirim
+                                                    Ulasan</button>
+                                            </div>
+                                        </form>
+                                    @endif
+                                @endauth
                             </div>
                         @endforeach
                     </div>

@@ -31,6 +31,7 @@ Route::get('/rajaongkir/provinces', [RajaOngkirController::class, 'getProvinces'
 Route::get('/rajaongkir/cities', [RajaOngkirController::class, 'getCities'])->name('rajaongkir.cities');
 Route::get('/rajaongkir/districts', [RajaOngkirController::class, 'getDistricts'])->name('rajaongkir.districts');
 Route::post('/rajaongkir/cost', [RajaOngkirController::class, 'getShippingCost'])->name('rajaongkir.cost');
+Route::post('/rajaongkir/waybill', [RajaOngkirController::class, 'getWaybill'])->name('rajaongkir.waybill');
 Route::get('/rajaongkir/couriers', [RajaOngkirController::class, 'getCouriers'])->name('rajaongkir.couriers');
 
 Route::middleware(['auth'])->group(function () {
@@ -48,4 +49,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/pesanan/{id}', [HomeController::class, 'deleteOrder'])->name('order.delete');
     Route::get('/profile', [ProfilController::class, 'index'])->name('profil');
     Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
+    // Ratings
+    Route::post('/ratings', [\App\Http\Controllers\ReviewController::class, 'store'])->name('ratings.store');
+    Route::get('/ratings/create', [\App\Http\Controllers\ReviewController::class, 'create'])->name('ratings.create');
+    Route::put('/ratings/{rating}', [\App\Http\Controllers\ReviewController::class, 'update'])->name('ratings.update');
+    Route::delete('/ratings/{rating}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('ratings.destroy');
 });

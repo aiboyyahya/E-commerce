@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Rating;
 use App\Models\Store;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
@@ -54,7 +55,11 @@ class HomeController extends Controller
     public function Product($id)
     {
         $product = Product::findOrFail($id);
-        return view('detail', compact('product'));
+        // Calculate average rating and count
+        $avgRating = (float) Rating::where('product_id', $product->id)->avg('rating');
+        $ratingCount = (int) Rating::where('product_id', $product->id)->count();
+
+        return view('detail', compact('product', 'avgRating', 'ratingCount'));
     }
 
     public function addToCart(Request $request)
@@ -161,6 +166,13 @@ class HomeController extends Controller
         $request->validate([
             'address' => 'required|string',
             'notes' => 'nullable|string',
+            'province' => 'required|string',
+            'city' => 'required|string',
+            'district' => 'required|string',
+            'postal_code' => 'required|string',
+            'courier' => 'required|string',
+            'courier_service' => 'required|string',
+            'shipping_cost' => 'required|numeric|min:0',
         ]);
 
         $cart = session()->get('cart', []);
@@ -187,6 +199,9 @@ class HomeController extends Controller
             $total += $item['price'] * $item['quantity'];
         }
 
+        // Add shipping cost to total
+        $total += $request->shipping_cost;
+
         $orderCode = 'ORD-' . time() . '-' . Auth::id();
 
         $transaction = Transaction::create([
@@ -195,9 +210,16 @@ class HomeController extends Controller
             'address' => $request->address,
             'status' => 'pending',
             'total' => $total,
+            'shipping_cost' => $request->shipping_cost,
             'notes' => $request->notes,
             'payment_method' => 'midtrans',
             'payment_status' => 'pending',
+            'province' => $request->province,
+            'city' => $request->city,
+            'district' => $request->district,
+            'postal_code' => $request->postal_code,
+            'courier' => $request->courier,
+            'courier_service' => $request->courier_service,
         ]);
 
         foreach ($itemsToProcess as $id => $item) {
@@ -253,7 +275,17 @@ class HomeController extends Controller
     public function checkoutSuccess($id)
     {
         $transaction = Transaction::with('items.product')->findOrFail($id);
-        return view('Checkout.Success', compact('transaction'));
+        // load user's ratings for this transaction (if any)
+        $userRatings = collect();
+        if (Auth::check()) {
+            // ratings table uses customer_id and transaction_id
+            $userRatings = Rating::where('customer_id', Auth::id())
+                ->where('transaction_id', $transaction->id)
+                ->get()
+                ->keyBy('product_id');
+        }
+
+        return view('Checkout.Success', compact('transaction', 'userRatings'));
     }
 
     public function orders()

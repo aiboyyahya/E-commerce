@@ -48,6 +48,16 @@ class MidtransService
             ];
         }
 
+        // Add shipping cost as a separate line item if present
+        if ($transaction->shipping_cost && $transaction->shipping_cost > 0) {
+            $itemDetails[] = [
+                'id' => 'shipping',
+                'price' => (int) round($transaction->shipping_cost),
+                'quantity' => 1,
+                'name' => 'Biaya Pengiriman',
+            ];
+        }
+
         $transactionPayload = [
             'transaction_details' => [
                 'order_id' => $transaction->order_code,

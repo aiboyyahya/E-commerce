@@ -4,7 +4,7 @@
 
 @section('content')
 
-<section class="bg-gray-100 py-10 md:py-16">
+<section class="bg-gray-100 py-10 md:py-16 rounded-3xl mx-6 mt-4">
     <div class="max-w-7xl mx-auto px-5 md:px-8 lg:px-16 flex flex-col lg:flex-row items-center gap-10">
         <div class="lg:w-1/2 text-center lg:text-left space-y-5">
             <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight">Selamat Datang</h1>
@@ -28,7 +28,7 @@
 
         <h2 class="text-2xl md:text-3xl font-bold mb-10 text-center">Produk Unggulan</h2>
 
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 ">
             @forelse($products as $product)
                 <div class="group bg-gray-50 rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden flex flex-col">
                     <a href="{{ route('product.show', $product->id) }}">

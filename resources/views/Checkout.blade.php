@@ -68,8 +68,7 @@
                     </div>
 
                     <div class="mt-6 mb-6">
-                        <label for="district_select"
-                            class="block text-sm font-medium text-gray-700 mb-2">Kecamatan</label>
+                        <label for="district_select" class="block text-sm font-medium text-gray-700 mb-2">Kecamatan</label>
                         <select id="district_select"
                             class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-orange-600 focus:border-orange-600">
                             <option value="">Pilih kecamatan</option>
@@ -78,7 +77,7 @@
                         <p id="district_error" class="text-xs text-red-500 mt-1 hidden"></p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 mb-6">
                         <div>
                             <label for="courier" class="block text-sm font-medium text-gray-700 mb-2">Kurir</label>
                             <select id="courier" name="courier"
@@ -99,16 +98,22 @@
                             <p id="service_status" class="text-xs text-gray-500 mt-1 hidden">Memuat layanan...</p>
                             <p id="service_error" class="text-xs text-red-500 mt-1 hidden"></p>
                         </div>
+
+                        <div>
+                            <label for="postal_code" class="block text-sm font-medium text-gray-700 mb-2">Kode Pos</label>
+                            <input type="text" name="postal_code" id="postal_code" required
+                                class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-orange-600 focus:border-orange-600"
+                                placeholder="Masukkan kode pos">
+                        </div>
                     </div>
 
-                    <input type="hidden" id="province_id" name="province_id" value="{{ old('province_id') }}">
-                    <input type="hidden" id="province_name" name="province" value="{{ old('province') }}">
-                    <input type="hidden" id="city_id" name="city_id" value="{{ old('city_id') }}">
-                    <input type="hidden" id="city_name" name="city" value="{{ old('city') }}">
-                    <input type="hidden" id="district_id" name="district_id" value="{{ old('district_id') }}">
-                    <input type="hidden" id="district_name" name="district" value="{{ old('district') }}">
-                    <input type="hidden" id="shipping_cost" name="shipping_cost"
-                        value="{{ old('shipping_cost', 0) }}">
+                    <input type="hidden" id="province_id" name="province_id">
+                    <input type="hidden" id="province_name" name="province">
+                    <input type="hidden" id="city_id" name="city_id">
+                    <input type="hidden" id="city_name" name="city">
+                    <input type="hidden" id="district_id" name="district_id">
+                    <input type="hidden" id="district_name" name="district">
+                    <input type="hidden" id="shipping_cost" name="shipping_cost" value="0">
 
                     <div class="mb-6">
                         <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Catatan</label>
@@ -392,10 +397,31 @@
                 displayTotal.textContent = `Rp${total.toLocaleString()}`;
             }
 
-            provinceSelect.addEventListener("change", (e) => loadCities(e.target.value));
-            citySelect.addEventListener("change", (e) => loadDistricts(e.target.value));
+            provinceSelect.addEventListener("change", (e) => {
+                const selectedOption = e.target.selectedOptions[0];
+                if (selectedOption) {
+                    document.getElementById("province_id").value = selectedOption.value;
+                    document.getElementById("province_name").value = selectedOption.textContent;
+                }
+                loadCities(e.target.value);
+            });
+            citySelect.addEventListener("change", (e) => {
+                const selectedOption = e.target.selectedOptions[0];
+                if (selectedOption) {
+                    document.getElementById("city_id").value = selectedOption.value;
+                    document.getElementById("city_name").value = selectedOption.textContent;
+                }
+                loadDistricts(e.target.value);
+            });
+            districtSelect.addEventListener("change", (e) => {
+                const selectedOption = e.target.selectedOptions[0];
+                if (selectedOption) {
+                    document.getElementById("district_id").value = selectedOption.value;
+                    document.getElementById("district_name").value = selectedOption.textContent;
+                }
+                loadCourierServices();
+            });
             courierSelect.addEventListener("change", loadCourierServices);
-            districtSelect.addEventListener("change", loadCourierServices);
             serviceSelect.addEventListener("change", (e) => {
                 const cost = e.target.selectedOptions[0]?.dataset.cost || 0;
                 costInput.value = cost;

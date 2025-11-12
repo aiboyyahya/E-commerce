@@ -66,6 +66,32 @@ class TransactionForm
                     ])
                     ->default('midtrans')
                     ->required(),
+                TextInput::make('province')
+                    ->disabled()
+                    ->label('Provinsi'),
+                TextInput::make('city')
+                    ->disabled()
+                    ->label('Kota'),
+                TextInput::make('district')
+                    ->disabled()
+                    ->label('Kecamatan'),
+                TextInput::make('postal_code')
+                    ->label('Kode Pos')
+                    ->numeric(),
+                Select::make('courier')
+                    ->label('Kurir')
+                    ->options([
+                        'jne' => 'JNE',
+                        'tiki' => 'TIKI',
+                        'pos' => 'POS Indonesia',
+                        'jnt' => 'J&T Express',
+                    ]),
+                TextInput::make('courier_service')
+                    ->label('Layanan Kurir'),
+                TextInput::make('tracking_number')
+                    ->label('Nomor Resi')
+                    ->disabled()
+                    ->placeholder('Tracking number akan muncul otomatis saat status dikirim'),
             ]);
     }
 }

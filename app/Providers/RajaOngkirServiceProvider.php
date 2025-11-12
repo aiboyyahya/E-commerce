@@ -106,6 +106,16 @@ class RajaOngkirServiceProvider extends ServiceProvider
                             array_filter($payload, fn($value) => $value !== null && $value !== '')
                         );
                 }
+
+                public function waybill(array $payload)
+                {
+                    return $this->http()
+                        ->asForm()
+                        ->post(
+                            $this->buildEndpoint('waybill'),
+                            array_filter($payload, fn($value) => $value !== null && $value !== '')
+                        );
+                }
             };
         });
     }
