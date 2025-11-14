@@ -1,7 +1,3 @@
-# TODO: Tambahkan loadCourierServices ke Checkout
-
-## Langkah-langkah:
-- [x] Tambahkan elemen HTML untuk status dan error pada bagian kurir/layanan
-- [x] Ganti fungsi calculateShipping dengan loadCourierServices yang disesuaikan
-- [x] Update event listeners untuk menggunakan loadCourierServices pada perubahan kurir dan district
-- [x] Test fungsi setelah perubahan
+-   [ ] Modify HomeController::index() to calculate average ratings and counts for products
+-   [ ] Update Home.blade.php to display star ratings for products with ratings
+-   [ ] Test the home page to ensure ratings display correctly

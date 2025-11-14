@@ -25,6 +25,21 @@ class HomeController extends Controller
     public function index()
     {
         $products = Product::latest()->take(8)->get();
+
+        // Calculate ratings for each product
+        $productIds = $products->pluck('id');
+        $ratings = Rating::whereIn('product_id', $productIds)
+            ->selectRaw('product_id, AVG(rating) as avg_rating, COUNT(*) as rating_count')
+            ->groupBy('product_id')
+            ->get()
+            ->keyBy('product_id');
+
+        // Attach ratings to products
+        foreach ($products as $product) {
+            $product->avgRating = $ratings->has($product->id) ? (float) $ratings[$product->id]->avg_rating : null;
+            $product->ratingCount = $ratings->has($product->id) ? (int) $ratings[$product->id]->rating_count : 0;
+        }
+
         return view('home', compact('products'));
     }
 
@@ -48,6 +63,20 @@ class HomeController extends Controller
 
         $products = $query->paginate(12);
         $categories = Category::all();
+
+        // Calculate ratings for each product
+        $productIds = $products->pluck('id');
+        $ratings = Rating::whereIn('product_id', $productIds)
+            ->selectRaw('product_id, AVG(rating) as avg_rating, COUNT(*) as rating_count')
+            ->groupBy('product_id')
+            ->get()
+            ->keyBy('product_id');
+
+        // Attach ratings to products
+        foreach ($products as $product) {
+            $product->avgRating = $ratings->has($product->id) ? (float) $ratings[$product->id]->avg_rating : null;
+            $product->ratingCount = $ratings->has($product->id) ? (int) $ratings[$product->id]->rating_count : 0;
+        }
 
         return view('products', compact('products', 'categories'));
     }
