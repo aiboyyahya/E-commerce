@@ -29,7 +29,7 @@
                     $filtered = $statusKey === 'all' ? $transactions : $transactions->where('status', $statusKey);
                 @endphp
 
-                <div class="order-section {{ $statusKey }}" data-status="{{ $statusKey }}">
+                <div class="order-section {{ $statusKey }} space-y-8" data-status="{{ $statusKey }}">
                     @foreach ($filtered as $transaction)
                         @php
                             $statusClass = match ($transaction->status) {
