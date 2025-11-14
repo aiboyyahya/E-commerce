@@ -6,6 +6,7 @@
 <section class="min-h-screen bg-white py-20">
     <div class="max-w-7xl mx-auto px-6 lg:px-16">
         <div class="bg-white rounded-3xl shadow-md border border-gray-200 overflow-hidden">
+
             <div class="px-10 pt-10 text-center border-b border-gray-100 pb-8">
                 <h1 class="text-4xl font-bold text-gray-900">Detail Produk</h1>
                 <p class="text-gray-600 mt-3 text-lg">{{ $product->product_name }}</p>
@@ -26,8 +27,7 @@
                                 <button type="button"
                                     onclick="document.getElementById('main-product-image').src='{{ asset('storage/' . $img->image_file) }}'"
                                     class="w-16 h-16 rounded-xl overflow-hidden border border-gray-200 hover:border-orange-500 transition-all duration-200 shadow-sm">
-                                    <img src="{{ asset('storage/' . $img->image_file) }}" alt="Thumbnail"
-                                        class="object-cover w-full h-full">
+                                    <img src="{{ asset('storage/' . $img->image_file) }}" class="object-cover w-full h-full">
                                 </button>
                             @endforeach
                         </div>
@@ -41,8 +41,8 @@
                                     <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 flex flex-col sm:flex-row gap-4">
                                         <div class="flex flex-col items-center sm:w-28">
                                             <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-200 shadow-sm">
-                                                <img src="{{ $rating->customer && $rating->customer->profile_photo ? asset('storage/' . $rating->customer->profile_photo) : 'https://ui-avatars.com/api/?name=' . urlencode($rating->customer->name ?? 'User') . '&background=random' }}"
-                                                    alt="Profile" class="object-cover w-full h-full">
+                                                <img src="{{ $rating->customer && $rating->customer->profile_photo ? asset('storage/' . $rating->customer->profile_photo) : 'https://ui-avatars.com/api/?name=' . urlencode($rating->customer->name ?? 'User') }}"
+                                                    class="object-cover w-full h-full">
                                             </div>
                                             <p class="text-xs font-semibold text-gray-800 mt-2 text-center truncate w-20">
                                                 {{ $rating->customer->name ?? 'Pengguna' }}
@@ -60,7 +60,7 @@
                                                 <p class="text-gray-800 text-sm leading-snug mb-2">"{{ $rating->comment }}"</p>
                                             @endif
                                             @if ($rating->image)
-                                                <img src="{{ asset('storage/' . $rating->image) }}" alt="Rating image"
+                                                <img src="{{ asset('storage/' . $rating->image) }}"
                                                     class="w-20 h-20 object-cover rounded-lg border border-gray-200 shadow-sm">
                                             @endif
                                         </div>
@@ -69,13 +69,14 @@
                             </div>
                         @else
                             <div class="bg-white border border-gray-200 rounded-xl p-4 text-center text-gray-500 shadow-sm text-sm">
-                                Belum ada ulasan untuk produk ini.
+                                Belum ada ulasan.
                             </div>
                         @endif
                     </div>
                 </div>
 
                 <div class="flex flex-col max-w-lg border border-gray-200 rounded-3xl p-10 shadow-sm bg-white sticky top-10 h-fit space-y-8">
+
                     <div>
                         <h2 class="text-4xl font-semibold text-gray-900">{{ $product->product_name }}</h2>
                         <p class="mt-2 text-gray-700 leading-relaxed">{{ $product->description }}</p>
@@ -97,32 +98,37 @@
                         Rp {{ number_format($product->purchase_price ?? 0, 0, ',', '.') }}
                     </p>
 
-                    <form action="{{ route('addToCart') }}" method="POST" id="addToCartForm" class="flex flex-col space-y-6 max-w-sm">
-                        @csrf
-                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                        <div class="flex items-center gap-4">
-                            <button type="button" id="decrement-btn" class="w-12 h-12 rounded-full bg-gray-200 text-gray-800 font-bold hover:bg-gray-300">−</button>
-                            <input type="number" name="quantity" id="product-quantity" value="1" min="1"
-                                max="{{ $product->stock }}" readonly
-                                class="w-20 text-center rounded-lg border border-gray-300 py-3 font-semibold text-lg focus:outline-none focus:ring-2 focus:ring-orange-500">
-                            <button type="button" id="increment-btn" class="w-12 h-12 rounded-full bg-gray-200 text-gray-800 font-bold hover:bg-gray-300">+</button>
-                        </div>
+                    <div class="flex items-center gap-4">
+                        <button type="button" id="decrement-btn" class="w-12 h-12 rounded-full bg-gray-200 text-gray-800 font-bold hover:bg-gray-300">−</button>
+                        <input type="number" id="product-quantity" value="1" min="1" max="{{ $product->stock }}"
+                            readonly class="w-20 text-center rounded-lg border border-gray-300 py-3 font-semibold text-lg">
+                        <button type="button" id="increment-btn" class="w-12 h-12 rounded-full bg-gray-200 text-gray-800 font-bold hover:bg-gray-300">+</button>
+                    </div>
 
-                        <p class="text-sm text-gray-600 font-semibold">
-                            Hanya tersisa {{ $product->stock }} barang
-                        </p>
+                    <p class="text-sm text-gray-600 font-semibold">Hanya tersisa {{ $product->stock }} barang</p>
 
-                        <div class="flex gap-4">
-                            <a href="{{ route('checkout.page', ['product_id' => $product->id, 'quantity' => 1, 'direct' => 1]) }}"
-                                class="flex-1 py-4 bg-black text-white rounded-lg font-semibold text-center hover:bg-gray-700 transition">
-                                Beli Sekarang
-                            </a>
-                            <button type="submit"
-                                class="flex-1 py-4 border border-black text-gray-700 rounded-lg font-semibold hover:bg-green-50 transition">
-                                Tambah ke Keranjang
-                            </button>
-                        </div>
-                    </form>
+                  <div class="flex gap-4 w-full">
+    <form id="buy-now-form" method="GET" action="{{ route('checkout.page') }}" class="flex-1">
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
+        <input type="hidden" name="quantity" id="buy-now-qty" value="1">
+        <input type="hidden" name="direct" value="1">
+        <button type="submit"
+            class="w-full py-4 bg-black text-white rounded-lg font-semibold hover:bg-gray-700 transition">
+            Beli Sekarang
+        </button>
+    </form>
+
+    <form id="add-to-cart-form" method="POST" action="{{ route('addToCart') }}" class="flex-1">
+        @csrf
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
+        <input type="hidden" name="quantity" id="addcart-qty" value="1">
+        <button type="submit"
+            class="w-full py-4 border border-black text-gray-700 rounded-lg font-semibold hover:bg-green-50 transition">
+            Tambah ke Keranjang
+        </button>
+    </form>
+</div>
+
 
                     <div class="border-t border-gray-200 pt-6 space-y-6 text-gray-700 text-sm">
                         <div class="flex items-start gap-4">
@@ -132,7 +138,7 @@
                             </svg>
                             <div>
                                 <h3 class="font-semibold text-gray-900">Pengiriman Gratis</h3>
-                                <p>Masukkan kode pos Anda untuk melihat ketersediaan pengiriman.</p>
+                                <p>Masukkan kode pos Anda untuk melihat ketersediaan.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-4">
@@ -141,30 +147,45 @@
                             </svg>
                             <div>
                                 <h3 class="font-semibold text-gray-900">Pengembalian Barang</h3>
-                                <p>Gratis pengembalian dalam 30 hari</p>
+                                <p>Gratis pengembalian dalam 30 hari.</p>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 </section>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const inc = document.getElementById('increment-btn');
-        const dec = document.getElementById('decrement-btn');
-        const qty = document.getElementById('product-quantity');
-        const max = parseInt(qty.max);
-        inc.addEventListener('click', () => {
-            let val = parseInt(qty.value);
-            if (val < max) qty.value = val + 1;
-        });
-        dec.addEventListener('click', () => {
-            let val = parseInt(qty.value);
-            if (val > 1) qty.value = val - 1;
-        });
+document.addEventListener('DOMContentLoaded', () => {
+    const inc = document.getElementById('increment-btn');
+    const dec = document.getElementById('decrement-btn');
+    const qtyInput = document.getElementById('product-quantity');
+    const max = parseInt(qtyInput.getAttribute('max'));
+    const buyQty = document.getElementById('buy-now-qty');
+    const cartQty = document.getElementById('addcart-qty');
+
+    function sync() {
+        buyQty.value = qtyInput.value;
+        cartQty.value = qtyInput.value;
+    }
+
+    inc.addEventListener('click', () => {
+        let val = parseInt(qtyInput.value);
+        if (val < max) qtyInput.value = val + 1;
+        sync();
     });
+
+    dec.addEventListener('click', () => {
+        let val = parseInt(qtyInput.value);
+        if (val > 1) qtyInput.value = val - 1;
+        sync();
+    });
+
+    sync();
+});
 </script>
 @endsection
