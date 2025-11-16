@@ -33,6 +33,10 @@
                     class="pb-1 {{ request()->is('produk*') ? 'text-black font-semibold border-b-2 border-black' : 'hover:text-gray-900' }} transition">
                     Produk
                 </a>
+                <a href="{{ route('articles.index') }}"
+                    class="pb-1 {{ request()->is('artikel*') ? 'text-black font-semibold border-b-2 border-black' : 'hover:text-gray-900' }} transition">
+                    Artikel
+                </a>
                 <a href="{{ route('kontak') }}"
                     class="pb-1 {{ request()->is('kontak') ? 'text-black font-semibold border-b-2 border-black' : 'hover:text-gray-900' }} transition">
                     Kontak
@@ -105,6 +109,7 @@
         <div class="flex-col space-y-1 text-sm font-medium mt-4 hidden peer-checked:flex md:hidden border-t pt-3">
             <a href="{{ url('/') }}" class="py-2 text-center hover:bg-gray-50 transition">Home</a>
             <a href="{{ url('/produk') }}" class="py-2 text-center hover:bg-gray-50 transition">Produk</a>
+            <a href="{{ route('articles.index') }}" class="py-2 text-center hover:bg-gray-50 transition">Artikel</a>
             <a href="{{ route('kontak') }}" class="py-2 text-center hover:bg-gray-50 transition">Kontak</a>
 
             @auth
@@ -146,7 +151,7 @@
                     @endif
 
                     @if (!empty(store()->tiktok))
-                        <a href="https://www.tiktok.com/@{{ ltrim(store() - > tiktok, '@') }}" target="_blank"
+                        <a href="https://www.tiktok.com/@{{ ltrim(store()->tiktok, '@') }}" target="_blank"
                             class="flex items-center space-x-2 hover:text-gray-300 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5"
                                 fill="currentColor">

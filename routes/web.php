@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\RajaOngkirController;
+use App\Http\Controllers\ArticleController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -26,6 +27,9 @@ Route::get('/produk', [HomeController::class, 'products'])->name('products');
 Route::get('/product/{id}', [HomeController::class, 'Product'])->name('product.show');
 
 Route::get('/kontak', [HomeController::class, 'kontak'])->name('kontak');
+
+Route::get('/artikel', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/artikel/{article}', [ArticleController::class, 'show'])->name('articles.show');
 
 Route::get('/rajaongkir/provinces', [RajaOngkirController::class, 'getProvinces'])->name('rajaongkir.provinces');
 Route::get('/rajaongkir/cities', [RajaOngkirController::class, 'getCities'])->name('rajaongkir.cities');

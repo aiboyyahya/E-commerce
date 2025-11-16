@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\Log;
 
 class MidtransWebhookController extends Controller
 {
+    protected $apiUrl;
+    protected $token;
+
+    public function __construct()
+    {
+        $this->apiUrl = env('WA_API_URL', 'https://api.fonnte.com/send');
+        $this->token = env('WA_API_TOKEN');
+    }
+
     public function handleWebhook(Request $request)
     {
         try {
@@ -53,6 +62,7 @@ class MidtransWebhookController extends Controller
             }
 
             $updateData = [];
+            $sendNotification = false;
 
             switch ($transactionStatus) {
                 case 'capture':
@@ -61,11 +71,13 @@ class MidtransWebhookController extends Controller
                     } elseif ($fraudStatus == 'accept') {
                         $updateData['payment_status'] = 'settlement';
                         $updateData['status'] = 'packing';
+                        $sendNotification = true;
                     }
                     break;
                 case 'settlement':
                     $updateData['payment_status'] = 'settlement';
                     $updateData['status'] = 'packing';
+                    $sendNotification = true;
                     break;
                 case 'pending':
                     $updateData['payment_status'] = 'pending';
@@ -86,6 +98,11 @@ class MidtransWebhookController extends Controller
 
             if (!empty($updateData)) {
                 $transaction->update($updateData);
+            }
+
+            // Send WhatsApp notification if payment is successful
+            if ($sendNotification) {
+                app(\App\Http\Controllers\HomeController::class)->sendOrderConfirmation($transaction);
             }
 
             Log::info('Transaction updated', [
