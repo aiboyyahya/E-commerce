@@ -1,49 +1,49 @@
 @extends('layouts.app')
 
-@section('title', 'Artikel')
-
 @section('content')
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold text-center mb-8">Artikel</h1>
+    <div class="container mx-auto px-4 py-10 text-center">
+        <h1 class="text-4xl font-extrabold mb-4 text-gray-800 tracking-wide">Artikel</h1>
+        <p class="text-gray-600 text-base mb-8">
+            Temukan artikel informatif dan terbaru yang telah kami sajikan untuk menambah wawasan Anda.
+        </p>
 
-    @if($articles->count() > 0)
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($articles as $article)
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    @if($article->image)
-                        <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}" class="w-full h-48 object-cover">
-                    @endif
-                    <div class="p-6">
-                        <h2 class="text-xl font-semibold mb-2">
-                            <a href="{{ route('articles.show', $article->slug) }}" class="text-blue-600 hover:text-blue-800">
-                                {{ $article->title }}
-                            </a>
-                        </h2>
-                        <p class="text-gray-600 text-sm mb-2">
-                            {{ \Carbon\Carbon::parse($article->created_at)->format('d M Y') }}
-                             </p>
-                             <p class="text-gray-500 text-sm mb-4">
-                               Ditulis oleh {{ $article->user->name }}
-                             </p>
-                       
-                        <p class="text-gray-700">
-                            {{ Str::limit(strip_tags($article->content), 150) }}
-                        </p>
-                        <a href="{{ route('articles.show', $article->slug) }}" class="text-blue-600 hover:text-blue-800 mt-4 inline-block">
-                            Baca Selengkapnya 
-                        </a>
+        @if ($articles->isEmpty())
+            <p class="text-gray-500 italic">No articles available.</p>
+        @else
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+                @foreach ($articles as $article)
+                    <div
+                        class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all border border-gray-100 overflow-hidden">
+
+                        @if ($article->image)
+                            <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}"
+                                class="w-full h-52 object-cover">
+                        @endif
+
+                        <div class="p-6">
+                            <div class="mb-3">
+                                <p class="text-4x1 font-semibold text-gray-700 text-left">
+                                    {{ $article->user->name }}
+                                </p>
+                                <p class="text-xs text-gray-500 text-left">
+                                    {{ $article->created_at->format('F d, Y') }}
+                                </p>
+                            </div>
+
+                            <h2 class="text-xl font-semibold text-gray-900 leading-tight mb-3 text-right">
+
+                                <a href="{{ route('articles.show', $article->slug) }}"
+                                    class="inline-block px-4 py-2 text-sm border border-black text-gray-700 rounded-lg font-semibold hover:bg-green-50 transition">
+                                    Baca Selengkapnya
+                                </a>
+                        </div>
                     </div>
-                </div>
-            @endforeach
-        </div>
+                @endforeach
+            </div>
 
-        <div class="mt-8">
-            {{ $articles->links() }}
-        </div>
-    @else
-        <div class="text-center py-12">
-            <p class="text-gray-500 text-lg">Belum ada artikel yang dipublikasikan.</p>
-        </div>
-    @endif
-</div>
+            <div class="mt-10">
+                {{ $articles->links() }}
+            </div>
+        @endif
+    </div>
 @endsection

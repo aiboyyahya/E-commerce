@@ -28,14 +28,20 @@ class ArticleForm
                     ->columnSpanFull(),
 
                 FileUpload::make('image')
-                    ->label('Gambar')
+                    ->label('Gambar Utama')
                     ->disk('public')
                     ->columnSpanFull()
                     ->required(),
 
+                FileUpload::make('thumbnail')
+                    ->label('Thumbnail')
+                    ->disk('public')
+                    ->columnSpanFull()
+                    ->required(),
+                    
                 Hidden::make('user_id')
                     ->label('Penulis')
-                    ->default(fn () => auth()->id()),
+                    ->default(fn() => auth()->id()),
             ]);
     }
 }

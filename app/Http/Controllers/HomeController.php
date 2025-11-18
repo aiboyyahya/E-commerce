@@ -486,7 +486,7 @@ class HomeController extends Controller
             "{$transaction->province} {$transaction->postal_code}\n\n" .
             "*Kurir:* {$transaction->courier} - {$transaction->courier_service}\n" .
             "*Total:* Rp" . number_format($transaction->total, 0, ',', '.') . "\n\n" .
-            "Terima kasih sudah berbelanja di {$storeName}!";
+            "Terima kasih sudah berbelanja di Toko Kami {$storeName}!";
 
         return $this->sendMessage($phone_number, $message);
     }

@@ -39,7 +39,7 @@
                         </div>
                         <div>
                             <p class="text-gray-900 mb-1 font-semibold">Tanggal Dikirim</p>
-                            <p>@if($transaction->status === 'done') {{ $transaction->updated_at->translatedFormat('d M Y') }} @else - @endif</p>
+                            <p>@if($transaction->status === 'sent') {{ $transaction->updated_at->translatedFormat('d M Y') }} @else - @endif</p>
                         </div>
                         <div>
                             <p class="text-gray-900 mb-1 font-semibold">Jumlah Barang</p>

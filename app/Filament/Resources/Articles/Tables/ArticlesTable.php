@@ -23,9 +23,16 @@ class ArticlesTable
                     ->searchable()
                     ->label('Penulis'),
                 ImageColumn::make('image')
-                    ->label('Gambar')
+                    ->label('Gambar Utama')
                     ->disk('public')
                     ->circular(),
+                ImageColumn::make('thumbnail')
+                    ->label('Thumbnail')
+                    ->disk('public')
+                    ->circular(),
+                TextColumn::make('category.category_name')
+                    ->label('Kategori')
+                    ->placeholder('Tidak ada kategori'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->label('Ditulis pada'),

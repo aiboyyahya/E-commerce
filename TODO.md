@@ -1,3 +1,2 @@
--   [ ] Modify HomeController::index() to calculate average ratings and counts for products
--   [ ] Update Home.blade.php to display star ratings for products with ratings
--   [ ] Test the home page to ensure ratings display correctly
+-   [x] Edit resources/views/articles/index.blade.php to display main image ($article->image) instead of thumbnail
+-   [x] Edit resources/views/articles/show.blade.php to display both main image and thumbnail
