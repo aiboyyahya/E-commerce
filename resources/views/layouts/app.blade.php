@@ -11,7 +11,7 @@
 
 <body class="bg-white text-gray-800">
 
-    <nav class="px-4 md:px-8 py-4 shadow-sm border-b relative bg-white">
+    <nav class="px-4 py-4 shadow-sm border-b relative bg-white">
         <input type="checkbox" id="menu-toggle" class="peer hidden">
         <div class="flex items-center justify-between w-full">
             <div class="flex items-center space-x-3">
