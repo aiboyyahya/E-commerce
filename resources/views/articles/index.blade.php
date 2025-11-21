@@ -20,13 +20,13 @@
                                 class="w-full h-52 object-cover">
                         @endif
 
-                        <div class="p-6">
+                        <div class="p-8">
                             <div class="mb-3">
-                                <p class="text-4x1 font-semibold text-gray-700 text-left">
+                                <p class="text-2xl font-extrabold text-gray-700 text-left mb-2">
                                     {{ $article->user->name }}
                                 </p>
                                 <p class="text-xs text-gray-500 text-left">
-                                    {{ $article->created_at->format('F d, Y') }}
+                                    {{ $article->created_at->format('d M Y') }}
                                 </p>
                             </div>
 

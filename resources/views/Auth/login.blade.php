@@ -13,8 +13,11 @@
     <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
         <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
 
-            <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">
+            <h1 class="text-2xl font-semibold text-gray-800 mb-4 text-center">
                 Masuk ke Akun Anda
+            </h1>
+             <h1 class="text-sm font-light text-gray-800 mb-6 text-center">
+               {{$storename}}
             </h1>
 
             @if (session('error'))

@@ -1,2 +1,1 @@
--   [x] Edit resources/views/articles/index.blade.php to display main image ($article->image) instead of thumbnail
--   [x] Edit resources/views/articles/show.blade.php to display both main image and thumbnail
+- [x] Modify GoogleLoginController::loginform to pass 'storename' => store()->store_name ?? 'SHOP' to the view

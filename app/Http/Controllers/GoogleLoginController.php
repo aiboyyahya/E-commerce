@@ -46,7 +46,7 @@ class GoogleLoginController extends Controller
     }
     public function loginform()
        {
-        return view('auth.login');
+        return view('auth.login', ['storename' => store()->store_name ?? 'SHOP']);
     }
 
     public function loginEmail(Request $request)
