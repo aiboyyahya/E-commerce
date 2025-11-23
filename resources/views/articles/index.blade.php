@@ -3,14 +3,14 @@
 @section('content')
     <div class="container mx-auto px-4 py-10 text-center">
         <h1 class="text-4xl font-extrabold mb-4 text-gray-800 tracking-wide">Artikel</h1>
-        <p class="text-gray-600 text-base mb-8">
+        <p class="text-gray-600 text-base mb-4">
             Temukan artikel informatif dan terbaru yang telah kami sajikan untuk menambah wawasan Anda.
         </p>
 
         @if ($articles->isEmpty())
             <p class="text-gray-500 italic">No articles available.</p>
         @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7 border-t border-gray-400 pt-8">
                 @foreach ($articles as $article)
                     <div
                         class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all border border-gray-100 overflow-hidden">

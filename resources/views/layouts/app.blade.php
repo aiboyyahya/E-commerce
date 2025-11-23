@@ -11,7 +11,7 @@
 
 <body class="bg-white text-gray-800">
 
-    <nav class="px-4 py-4 shadow-sm border-b relative bg-white">
+    <nav class="px-4 py-3 shadow-sm border-b relative bg-white">
         <input type="checkbox" id="menu-toggle" class="peer hidden">
         <div class="flex items-center justify-between w-full">
             <div class="flex items-center space-x-3">
@@ -24,10 +24,10 @@
                 </div>
             </div>
 
-            <div class="hidden md:flex space-x-8 font-medium text-sm">
+            <div class="hidden md:flex space-x-4 items-center font-medium text-sm">
                 <a href="{{ url('/') }}"
                     class="pb-1 {{ request()->is('/') ? 'text-black font-semibold border-b-2 border-black' : 'hover:text-gray-900' }} transition">
-                    Home
+                    Beranda
                 </a>
                 <a href="{{ url('/produk') }}"
                     class="pb-1 {{ request()->is('produk*') ? 'text-black font-semibold border-b-2 border-black' : 'hover:text-gray-900' }} transition">
@@ -41,6 +41,30 @@
                     class="pb-1 {{ request()->is('kontak') ? 'text-black font-semibold border-b-2 border-black' : 'hover:text-gray-900' }} transition">
                     Kontak
                 </a>
+
+                <form action="{{ url('/produk') }}" method="GET" class="relative" id="navbarSearchForm">
+                    <input type="text" name="q" id="navbarSearchInput" placeholder="Cari produk..."
+                        value="{{ request()->query('q') }}"
+                        class="border border-gray-300 rounded-full pl-3 pr-10 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+                    <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1112 4.5a7.5 7.5 0 014.65 12.15z" />
+                        </svg>
+                    </button>
+                </form>
+
+                <script>
+                    document.getElementById('navbarSearchForm').addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        var query = document.getElementById('navbarSearchInput').value.trim();
+                        if (query.length === 0) {
+                            window.location.href = '{{ url('/') }}';
+                        } else {
+                            window.location.href = '{{ url('/produk') }}' + '?search=' + encodeURIComponent(query);
+                        }
+                    });
+                </script>
             </div>
 
             <div class="flex items-center space-x-4 text-sm">
@@ -107,7 +131,7 @@
         </div>
 
         <div class="flex-col space-y-1 text-sm font-medium mt-4 hidden peer-checked:flex md:hidden border-t pt-3">
-            <a href="{{ url('/') }}" class="py-2 text-center hover:bg-gray-50 transition">Home</a>
+            <a href="{{ url('/') }}" class="py-2 text-center hover:bg-gray-50 transition">Beranda</a>
             <a href="{{ url('/produk') }}" class="py-2 text-center hover:bg-gray-50 transition">Produk</a>
             <a href="{{ route('articles.index') }}" class="py-2 text-center hover:bg-gray-50 transition">Artikel</a>
             <a href="{{ route('kontak') }}" class="py-2 text-center hover:bg-gray-50 transition">Kontak</a>

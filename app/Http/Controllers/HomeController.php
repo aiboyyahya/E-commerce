@@ -26,6 +26,42 @@ class HomeController extends Controller
         $this->token = env('WA_API_TOKEN');
     }
 
+    public function searchProducts(Request $request)
+    {
+        $query = Product::query();
+
+        if ($request->filled('q')) {
+            $query->where('product_name', 'like', '%' . $request->q . '%');
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        $products = $query->with('category')->limit(12)->get();
+
+        $productIds = $products->pluck('id');
+        $ratings = Rating::whereIn('product_id', $productIds)
+            ->selectRaw('product_id, AVG(rating) as avg_rating, COUNT(*) as rating_count')
+            ->groupBy('product_id')
+            ->get()
+            ->keyBy('product_id');
+
+        $result = $products->map(function ($product) use ($ratings) {
+            return [
+                'id' => $product->id,
+                'product_name' => $product->product_name,
+                'category_name' => $product->category->category_name ?? '',
+                'purchase_price' => $product->purchase_price,
+                'image_url' => asset('storage/' . $product->image),
+                'avgRating' => $ratings->has($product->id) ? (float) $ratings[$product->id]->avg_rating : null,
+                'ratingCount' => $ratings->has($product->id) ? (int) $ratings[$product->id]->rating_count : 0,
+            ];
+        });
+
+        return response()->json($result);
+    }
+
     public function index()
     {
         $products = Product::latest()->take(8)->get();
@@ -140,7 +176,7 @@ class HomeController extends Controller
     public function updateCart(Request $request, $id)
     {
         $request->validate([
-            'quantity' => 'required|integer|min=1',
+            'quantity' => 'required|integer|min:1',
         ]);
 
         $cart = session()->get('cart', []);

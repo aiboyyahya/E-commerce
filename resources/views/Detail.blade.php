@@ -149,17 +149,6 @@
                             <div class="flex items-start gap-4">
                                 <svg class="w-6 h-6 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor"
                                     stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h18v13H3z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 16v4m10-4v4M9 20h6" />
-                                </svg>
-                                <div>
-                                    <h3 class="font-semibold text-gray-900">Pengiriman Gratis</h3>
-                                    <p>Masukkan kode pos Anda untuk melihat ketersediaan.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-4">
-                                <svg class="w-6 h-6 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor"
-                                    stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
                                 <div>
